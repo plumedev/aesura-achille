@@ -43,6 +43,7 @@ src/
 ## 🎨 Palette de Couleurs
 
 Le projet utilise une palette simple et élégante avec :
+
 - **Bleu** (`#60a5fa`) - Couleur principale
 - **Rouge** (`#f87171`) - Couleur secondaire
 - **Gris** - Couleurs neutres pour les arrière-plans et textes
@@ -53,7 +54,7 @@ Consultez `PALETTE_BRAND.md` pour plus de détails sur l'utilisation des couleur
 
 ### Prérequis
 
-- Node.js v20.18.0 ou supérieur
+- Node.js v20.19.0 ou supérieur
 - npm ou yarn
 
 ### Installation
@@ -108,6 +109,7 @@ Un exemple d'API est fourni dans `src/api/example/`. L'architecture utilise des 
 ### Styles
 
 Les styles sont organisés dans `src/assets/styles/` avec :
+
 - `main.css` - Variables CSS personnalisées
 - `scss/` - Styles SCSS modulaires
 - Support complet de Tailwind CSS
@@ -127,6 +129,7 @@ Le starter inclut une page d'accueil de démonstration qui montre:
 ### Composables
 
 Le projet utilise des composables pour la logique métier réutilisable :
+
 - `useRequest` - Gestion des requêtes API
 - `useToast` - Notifications toast
 - `useTheme` - Gestion du thème
@@ -134,6 +137,7 @@ Le projet utilise des composables pour la logique métier réutilisable :
 ### Stores
 
 Gestion d'état avec Pinia :
+
 - `exampleStore` - Store d'exemple
 - `toastStore` - Gestion des notifications
 
