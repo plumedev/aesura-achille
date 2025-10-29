@@ -1,6 +1,6 @@
 {
   "name": "vue-starter-kit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@intlify/unplugin-vue-i18n": "^6.0.8",
-    "@nuxt/ui": "^3.3.0",
+    "@nuxt/ui": "^4.1.0",
     "axios": "^1.10.0",
     "date-fns": "^4.1.0",
     "pinia": "^3.0.3",
