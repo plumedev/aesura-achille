@@ -1,45 +1,12 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-@theme {
-  /* Palette simple - Bleu, Rouge, Gris */
-  
-  /* Couleur principale - Bleu et ses nuances */
-  --color-brand-50: #eff6ff;   /* Très clair */
-  --color-brand-100: #dbeafe;
-  --color-brand-200: #bfdbfe;
-  --color-brand-300: #93c5fd;
-  --color-brand-400: #60a5fa;  /* Bleu principal */
-  --color-brand-500: #3b82f6;  /* Bleu moyen */
-  --color-brand-600: #2563eb;  /* Bleu foncé */
-  --color-brand-700: #1d4ed8;  /* Bleu très foncé */
-  --color-brand-800: #1e40af;
-  --color-brand-900: #1e3a8a;
-  --color-brand-950: #172554;
+/* Dark mode par défaut */
+html.dark {
+  background-color: rgb(3 7 18);
+}
 
-  /* Couleur secondaire - Rouge et ses nuances */
-  --color-stone-50: #fef2f2;
-  --color-stone-100: #fee2e2;
-  --color-stone-200: #fecaca;
-  --color-stone-300: #fca5a5;
-  --color-stone-400: #f87171;  /* Rouge principal */
-  --color-stone-500: #ef4444;  /* Rouge moyen */
-  --color-stone-600: #dc2626;  /* Rouge foncé */
-  --color-stone-700: #b91c1c;  /* Rouge très foncé */
-  --color-stone-800: #991b1b;
-  --color-stone-900: #7f1d1d;
-  --color-stone-950: #450a0a;
-
-  /* Couleurs neutres - Gris */
-  --color-neutral-50: #f9fafb;
-  --color-neutral-100: #f3f4f6;  /* Gris clair */
-  --color-neutral-200: #e5e7eb;  /* Gris moyen */
-  --color-neutral-300: #d1d5db;
-  --color-neutral-400: #9ca3af;
-  --color-neutral-500: #6b7280;  /* Gris principal */
-  --color-neutral-600: #4b5563;  /* Gris foncé */
-  --color-neutral-700: #374151;  /* Gris très foncé */
-  --color-neutral-800: #1f2937;
-  --color-neutral-900: #111827;
-  --color-neutral-950: #030712;
-} 
+body {
+  background-color: rgb(3 7 18);
+  color: rgb(250 250 250);
+}

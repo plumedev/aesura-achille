@@ -1,25 +1,9 @@
 import type { App } from 'vue'
 
-// Configuration du thème NuxtUI
-export const nuxtuiConfig = {
-  defaultVariants: {
-    Button: {
-      color: 'primary',
-      size: 'lg'
-    },
-    Card: {
-      color: 'white'
-    },
-    Alert: {
-      color: 'error',
-      variant: 'soft'
-    }
-  }
-}
-
+// Plugin NuxtUI simplifié
+// La configuration des couleurs se fait maintenant dans vite.config.ts
 export default {
   install: (app: App) => {
-    // Injection de la configuration dans l'application
-    app.provide('nuxtuiConfig', nuxtuiConfig)
+    // Plugin minimal - la configuration est gérée par Nuxt UI directement
   }
 }

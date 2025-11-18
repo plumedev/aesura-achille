@@ -24,10 +24,9 @@ const router = createRouter({
   routes
 })
 
-// Navigation guard simple pour les titres de page
 router.beforeEach((to) => {
   if (to.meta.title) {
-    document.title = `${to.meta.title} - Vue Starter Kit`
+    document.title = `${to.meta.title} - Aesura`
   }
   return true
 })

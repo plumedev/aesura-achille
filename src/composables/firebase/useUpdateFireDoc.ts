@@ -1,0 +1,37 @@
+import { doc, updateDoc, type DocumentData } from 'firebase/firestore'
+import { getDb } from '@/config/firebase'
+import { useRequest } from '@/composables/utils/useRequest'
+
+export interface UpdateFireDocParams {
+  collectionName: string
+  documentId: string
+  data: Partial<DocumentData>
+}
+
+export function useUpdateFireDoc() {
+  const runServices = async ({ collectionName, documentId, data }: UpdateFireDocParams): Promise<void> => {
+    try {
+      const db = getDb()
+      await updateDoc(doc(db, collectionName, documentId), data)
+      // Utilisation directe du toast de NuxtUI via le composable global
+      const { add } = useToast()
+      add({
+        title: 'Document modifié avec succès !',
+        color: 'success'
+      })
+    } catch (error: unknown) {
+      const { add } = useToast()
+      if (error instanceof Error) {
+        add({
+          title: error.message,
+          color: 'error'
+        })
+      }
+      throw error
+    }
+  }
+
+  return useRequest<void>({
+    runServices
+  })
+}

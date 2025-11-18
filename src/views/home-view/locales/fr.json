@@ -1,8 +1,23 @@
 {
   "home": {
-    "welcome": "Bienvenue dans votre starter Vue3 + TypeScript !",
-    "subtitle": "Exemple d'intégration avec Vuetify, Pinia, i18n et API",
-    "fetchDataBtn": "Récupérer des données",
-    "apiResponse": "Réponse de l'API :"
+    "title": "Mes dépenses",
+    "form": {
+      "name": "Nom de la dépense",
+      "amount": "Montant (€)",
+      "account": "Compte",
+      "add": "Ajouter",
+      "reset": "Réinitialiser"
+    },
+    "table": {
+      "name": "Nom de la dépense",
+      "amount": "Montant (€)",
+      "account": "Compte",
+      "actions": "Actions",
+      "delete": "Supprimer"
+    },
+    "toast": {
+      "delete": "Dépense supprimée avec succès",
+      "add": "Dépense ajoutée avec succès"
+    }
   }
-} 
+}

@@ -7,8 +7,6 @@ body {
   font-family: "Arial", system-ui, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f8f9fa;
-  color: #333;
 }
 
 /* Styles pour les titres */
@@ -39,16 +37,4 @@ h3 {
 p {
   margin: 0 0 1rem 0;
   line-height: 1.6;
-}
-
-/* Styles pour les liens */
-a {
-  color: #007bff;
-  text-decoration: none;
-  transition: color 0.2s ease-in-out;
-}
-
-a:hover {
-  color: #0056b3;
-  text-decoration: underline;
 }

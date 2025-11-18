@@ -1,5 +1,5 @@
 {
-  "name": "vue-starter-kit",
+  "name": "aesura-achille",
   "version": "1.0.1",
   "private": true,
   "type": "module",
@@ -17,6 +17,7 @@
     "@nuxt/ui": "^4.1.0",
     "axios": "^1.10.0",
     "date-fns": "^4.1.0",
+    "firebase": "^12.6.0",
     "pinia": "^3.0.3",
     "vue": "^3.5.17",
     "vue-i18n": "^11.1.10",

@@ -13,12 +13,12 @@ export default defineConfig({
     ui({
       ui: {
         colors: {
-          primary: 'brand',      // Bleu (#60a5fa) - couleur principale
-          secondary: 'stone',    // Rouge (#f87171) - couleur secondaire
-          neutral: 'neutral',    // Gris personnalisé
-          success: 'brand',      // Utilise votre palette brand pour le succès
-          warning: 'yellow',     // Jaune pour les avertissements
-          error: 'red'          // Rouge pour les erreurs
+          primary: 'emerald',
+          secondary: 'gray',
+          success: 'green',
+          warning: 'yellow',
+          error: 'red',
+          neutral: 'zinc'
         }
       }
     }),
