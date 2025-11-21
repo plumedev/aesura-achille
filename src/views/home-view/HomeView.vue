@@ -11,14 +11,14 @@
           </div>
         </template>
 
-        <ExpenseTable v-model="expenses as Expense[]" />
+        <ExpenseTable :model-value="(expenses as Expense[]) || []" @update:model-value="handleUpdateExpenses" />
       </UCard>
     </div>
   </UContainer>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import ExpenseTable, { type Expense } from './components/ExpenseTable.vue'
 import ExpenseForm from './components/ExpenseForm.vue'
 import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
@@ -36,6 +36,12 @@ onMounted(async () => {
 })
 
 const handleAddExpense = (expense: Expense) => {
-  expenses.value?.unshift(expense)
+  if (expenses.value && Array.isArray(expenses.value)) {
+    (expenses.value as Expense[]).unshift(expense)
+  }
+}
+
+const handleUpdateExpenses = (newExpenses: Expense[]) => {
+  expenses.value = newExpenses
 }
 </script>
