@@ -1,6 +1,7 @@
 import { collection, addDoc, type DocumentData } from 'firebase/firestore'
 import { getDb } from '@/config/firebase'
 import { useRequest } from '@/composables/utils/useRequest'
+import { useToast } from '@nuxt/ui/composables'
 
 export interface CreateFireDocParams {
   collectionName: string

@@ -1,6 +1,7 @@
 import { getExampleData } from '@/api/example/exampleService'
 import type { IExampleData } from '@/api/example/interfaces/IExampleData'
 import { useRequest } from '@/composables/utils/useRequest'
+import { useToast } from '@nuxt/ui/composables'
 
 export function useGetExampleData() {
   const runServices = async (): Promise<IExampleData> => {

@@ -7,6 +7,7 @@ import { h, resolveComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
+import { useToast } from '@nuxt/ui/composables'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')

@@ -27,6 +27,7 @@ import { resolveComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { Account, Expense } from './ExpenseTable.vue'
 import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
+import { useToast } from '@nuxt/ui/composables'
 
 const USelect = resolveComponent('USelect')
 const UInputNumber = resolveComponent('UInputNumber')
