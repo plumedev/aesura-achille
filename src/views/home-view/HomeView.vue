@@ -11,7 +11,8 @@
           </div>
         </template>
 
-        <ExpenseTable :model-value="(expenses as Expense[]) || []" @update:model-value="handleUpdateExpenses" />
+        <ExpenseTable :model-value="(expenses as Expense[]) || []" @update:model-value="handleUpdateExpenses"
+          :loading="isLoadingExpenses" />
       </UCard>
     </div>
   </UContainer>
@@ -23,7 +24,7 @@ import ExpenseTable, { type Expense } from './components/ExpenseTable.vue'
 import ExpenseForm from './components/ExpenseForm.vue'
 import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
 
-const { data: expenses, doRequest: getExpenses } = useReadFireDoc()
+const { data: expenses, doRequest: getExpenses, isLoading: isLoadingExpenses } = useReadFireDoc()
 
 onMounted(async () => {
   await getExpenses({

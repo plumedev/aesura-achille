@@ -9,7 +9,7 @@
       "reset": "Réinitialiser"
     },
     "table": {
-      "name": "Nom de la dépense",
+      "name": "Nom",
       "amount": "Montant (€)",
       "account": "Compte",
       "actions": "Actions",

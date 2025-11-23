@@ -1,13 +1,15 @@
 <template>
-  <UTable :data="modelValue" :columns="columns" />
+  <UTable :data="modelValue" :columns="columns" :loading="loading" loading-animation="carousel"
+    loading-color="primary" />
 </template>
 
 <script setup lang="ts">
-import { h, resolveComponent } from 'vue'
+import { h, resolveComponent, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { useToast } from '@nuxt/ui/composables'
+import { formatCurrency } from '@/helpers/NumberFormat.helper'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
@@ -28,7 +30,16 @@ export interface Expense {
 
 const props = defineProps<{
   modelValue: Expense[]
+  loading: boolean
 }>()
+
+const totalAmount = computed(() => {
+  return props.modelValue.reduce((sum, expense) => sum + (expense.amount || 0), 0)
+})
+
+const formattedTotal = computed(() => {
+  return formatCurrency(totalAmount.value)
+})
 
 const emit = defineEmits<{
   'update:modelValue': [value: Expense[]]
@@ -77,21 +88,19 @@ function getRowItems(row: Row<Expense>) {
 const columns: TableColumn<Expense>[] = [
   {
     accessorKey: 'name',
-    header: () => h('div', { class: 'text-left' }, t('home.table.name'))
+    header: () => h('div', { class: 'text-left' }, t('home.table.name')),
+    footer: () => h('div', { class: 'text-left font-bold' }, 'Total')
   },
   {
     accessorKey: 'amount',
     header: () => h('div', { class: 'text-right' }, t('home.table.amount')),
     cell: ({ row }) => {
       const amount = Number.parseFloat(row.getValue('amount'))
-
-      const formatted = new Intl.NumberFormat('fr-FR', {
-        style: 'currency',
-        currency: 'EUR'
-      }).format(amount)
+      const formatted = formatCurrency(amount)
 
       return h('div', { class: 'text-right font-medium' }, formatted)
-    }
+    },
+    footer: () => h('div', { class: 'text-right font-bold' }, formattedTotal.value)
   },
   {
     accessorKey: 'account',
@@ -130,5 +139,6 @@ const columns: TableColumn<Expense>[] = [
       )
     }
   }
+
 ]
 </script>

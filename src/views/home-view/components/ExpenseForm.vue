@@ -1,19 +1,19 @@
 <template>
   <UCard class="bg-muted/50">
-    <UForm :state="formState" @submit="handleSubmit" class="flex flex-row justify-between gap-4">
-      <div class="flex flex-row gap-4">
-        <UInput v-model="formState.name" :placeholder="$t('home.form.name')" size="lg" />
+    <UForm :state="formState" @submit="handleSubmit" class="flex flex-col md:flex-row md:justify-between gap-4">
+      <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+        <UInput v-model="formState.name" :placeholder="$t('home.form.name')" size="lg" class="w-full" />
         <UInputNumber v-model="formState.amount" :increment="false" :decrement="false"
-          :placeholder="$t('home.form.amount')" size="lg" />
+          :placeholder="$t('home.form.amount')" size="lg" class="w-full md:w-auto" />
         <USelect v-model="formState.account" :items="accountsOptions" :placeholder="$t('home.form.account')" size="lg"
-          width="full" />
+          width="full" class="w-full md:w-auto" />
       </div>
 
-      <div>
-        <UButton type="button" variant="ghost" @click="resetForm">
+      <div class="flex flex-row gap-2 w-full md:w-auto">
+        <UButton type="button" variant="ghost" @click="resetForm" class="flex-1 md:flex-initial">
           {{ $t('home.form.reset') }}
         </UButton>
-        <UButton type="submit" color="primary" :disabled="!isFormValid">
+        <UButton type="submit" color="primary" :disabled="!isFormValid" class=" w-auto mx-auto">
           {{ $t('home.form.add') }}
         </UButton>
       </div>
