@@ -74,7 +74,8 @@ const handleSubmit = () => {
     name: formState.value.name,
     amount: formState.value.amount!,
     account: formState.value.account!,
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    type: 'expense'
   }
 
   emit('add', newExpense)

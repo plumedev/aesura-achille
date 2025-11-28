@@ -6,19 +6,21 @@ import { useToast } from '@nuxt/ui/composables'
 export interface DeleteFireDocParams {
   collectionName: string
   documentId: string
+  showToast?: boolean
 }
 
 export function useDeleteFireDoc() {
-  const runServices = async ({ collectionName, documentId }: DeleteFireDocParams): Promise<void> => {
+  const runServices = async ({ collectionName, documentId, showToast = true }: DeleteFireDocParams): Promise<void> => {
     try {
       const db = getDb()
       await deleteDoc(doc(db, collectionName, documentId))
-      // Utilisation directe du toast de NuxtUI via le composable global
-      const { add } = useToast()
-      add({
-        title: 'Document supprimé avec succès !',
-        color: 'success'
-      })
+      if (showToast) {
+        const { add } = useToast()
+        add({
+          title: 'Document supprimé avec succès !',
+          color: 'success'
+        })
+      }
     } catch (error: unknown) {
       const { add } = useToast()
       if (error instanceof Error) {

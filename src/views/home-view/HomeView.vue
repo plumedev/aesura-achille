@@ -12,7 +12,7 @@
         </template>
 
         <ExpenseTable :model-value="(expenses as Expense[]) || []" @update:model-value="handleUpdateExpenses"
-          :loading="isLoadingExpenses" />
+          @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
       </UCard>
     </div>
   </UContainer>
@@ -24,6 +24,7 @@ import ExpenseTable, { type Expense } from './components/ExpenseTable.vue'
 import ExpenseForm from './components/ExpenseForm.vue'
 import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
 import { useCreateFireDoc } from '@/composables/firebase/useCreateFireDoc'
+import { useDeleteFireDoc } from '@/composables/firebase/useDeleteFireDoc'
 import { useToast } from '@nuxt/ui/composables'
 import { useI18n } from 'vue-i18n'
 
@@ -32,6 +33,7 @@ const { add: addToast } = useToast()
 
 const { data: expenses, doRequest: getExpenses, isLoading: isLoadingExpenses } = useReadFireDoc()
 const { doRequest: createExpense, isLoading: isCreatingExpense } = useCreateFireDoc()
+const { doRequest: deleteExpense } = useDeleteFireDoc()
 
 interface ExpenseFormInstance {
   resetForm: () => void
@@ -56,7 +58,8 @@ const handleAddExpense = async (expense: Expense) => {
       name: expense.name,
       amount: expense.amount,
       account: expense.account,
-      date: expense.date
+      date: expense.date,
+      type: expense.type
     }
 
     // Sauvegarder dans Firebase (sans toast automatique, on le gère nous-mêmes)
@@ -86,6 +89,32 @@ const handleAddExpense = async (expense: Expense) => {
     }
   } catch (error) {
     console.error('Erreur lors de la création de la dépense:', error)
+  }
+}
+
+const handleDeleteExpense = async (id: string) => {
+  try {
+    await deleteExpense({
+      collectionName: 'transactions',
+      documentId: id,
+      showToast: false
+    })
+
+    await getExpenses({
+      collectionName: 'transactions',
+    })
+
+    if (expenses.value) {
+      expenses.value = expenses.value
+    }
+
+    addToast({
+      title: t('home.toast.delete'),
+      color: 'success',
+      icon: 'i-lucide-circle-check'
+    })
+  } catch (error) {
+    console.error('Erreur lors de la suppression de la dépense:', error)
   }
 }
 

@@ -8,7 +8,6 @@ import { h, resolveComponent, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
-import { useToast } from '@nuxt/ui/composables'
 import { formatCurrency } from '@/helpers/NumberFormat.helper'
 
 const UButton = resolveComponent('UButton')
@@ -16,7 +15,6 @@ const UBadge = resolveComponent('UBadge')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 const { t } = useI18n()
-const { add: addToast } = useToast()
 
 export type Account = 'CIC' | 'Revolut' | 'Crypto.com'
 
@@ -26,6 +24,7 @@ export interface Expense {
   amount: number
   account: Account
   date: string
+  type: string
 }
 
 const props = defineProps<{
@@ -43,17 +42,11 @@ const formattedTotal = computed(() => {
 
 const emit = defineEmits<{
   'update:modelValue': [value: Expense[]]
+  'delete': [id: string]
 }>()
 
 const deleteExpense = (id: string) => {
-  const updatedExpenses = props.modelValue.filter(expense => expense.id !== id)
-  emit('update:modelValue', updatedExpenses)
-
-  addToast({
-    title: t('home.toast.delete'),
-    color: 'success',
-    icon: 'i-lucide-circle-check'
-  })
+  emit('delete', id)
 }
 
 const getAccountColor = (account: Account): 'primary' | 'neutral' | 'info' => {
