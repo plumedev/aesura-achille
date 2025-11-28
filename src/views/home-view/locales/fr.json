@@ -1,9 +1,12 @@
 {
   "home": {
-    "title": "Mes dépenses",
+    "title": "Mes transactions",
     "form": {
-      "name": "Nom de la dépense",
+      "name": "Nom de la transaction",
       "amount": "Montant (€)",
+      "type": "Type",
+      "expense": "Dépense",
+      "income": "Revenu",
       "account": "Compte",
       "add": "Ajouter",
       "reset": "Réinitialiser"
@@ -13,13 +16,19 @@
       "amount": "Montant (€)",
       "account": "Compte",
       "actions": "Actions",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "total": "Total",
+      "expenses": "Dépenses",
+      "income": "Revenus",
+      "balance": "Solde"
     },
     "toast": {
-      "delete": "Dépense supprimée avec succès",
-      "add": "Dépense ajoutée avec succès"
+      "delete": "Transaction supprimée avec succès",
+      "add": "Transaction ajoutée avec succès"
     },
     "filter": {
+      "type": "Filtrer par type",
+      "allTypes": "Tous les types",
       "account": "Filtrer par compte",
       "allAccounts": "Tous les comptes"
     }

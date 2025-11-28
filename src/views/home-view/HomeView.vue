@@ -13,11 +13,20 @@
 
         <template #default>
           <div class="space-y-4">
-            <!-- Filtre par compte -->
-            <div class="flex items-center gap-4">
-              <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
-              <USelect v-model="selectedAccount" :items="accountFilterOptions"
-                :placeholder="$t('home.filter.allAccounts')" class="w-48" clearable />
+            <!-- Filtres -->
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+              <!-- Filtre par type -->
+              <div class="flex items-center gap-4">
+                <label class="text-sm font-medium">{{ $t('home.filter.type') }}</label>
+                <USelect v-model="selectedType" :items="typeFilterOptions"
+                  :placeholder="$t('home.filter.allTypes')" class="w-48" clearable />
+              </div>
+              <!-- Filtre par compte -->
+              <div class="flex items-center gap-4">
+                <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
+                <USelect v-model="selectedAccount" :items="accountFilterOptions"
+                  :placeholder="$t('home.filter.allAccounts')" class="w-48" clearable />
+              </div>
             </div>
 
             <ExpenseTable :model-value="filteredExpenses" @update:model-value="handleUpdateExpenses"
@@ -47,6 +56,7 @@ const { doRequest: createExpense, isLoading: isCreatingExpense } = useCreateFire
 const { doRequest: deleteExpense } = useDeleteFireDoc()
 
 const selectedAccount = ref<Account | null>(null)
+const selectedType = ref<'expense' | 'income' | null>(null)
 
 const accountFilterOptions = computed(() => [
   { label: t('home.filter.allAccounts'), value: null },
@@ -55,12 +65,27 @@ const accountFilterOptions = computed(() => [
   { label: 'Crypto.com', value: 'Crypto.com' }
 ])
 
+const typeFilterOptions = computed(() => [
+  { label: t('home.filter.allTypes'), value: null },
+  { label: t('home.form.expense'), value: 'expense' },
+  { label: t('home.form.income'), value: 'income' }
+])
+
 const filteredExpenses = computed(() => {
   const allExpenses = (expenses.value as Expense[]) || []
-  if (!selectedAccount.value) {
-    return allExpenses
+  let filtered = allExpenses
+
+  // Filtrer par type
+  if (selectedType.value) {
+    filtered = filtered.filter((expense) => expense.type === selectedType.value)
   }
-  return allExpenses.filter((expense) => expense.account === selectedAccount.value)
+
+  // Filtrer par compte
+  if (selectedAccount.value) {
+    filtered = filtered.filter((expense) => expense.account === selectedAccount.value)
+  }
+
+  return filtered
 })
 
 interface ExpenseFormInstance {

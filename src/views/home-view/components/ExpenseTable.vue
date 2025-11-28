@@ -1,6 +1,26 @@
 <template>
-  <UTable :data="modelValue" :columns="columns" :loading="loading" loading-animation="carousel"
-    loading-color="primary" />
+  <div class="flex flex-col max-h-[60vh]">
+    <div class="overflow-y-auto flex-1">
+      <UTable :data="modelValue" :columns="columns" :loading="loading" loading-animation="carousel"
+        loading-color="primary" />
+    </div>
+    <!-- Footer fixe -->
+    <div class="sticky bottom-0 bg-background dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 z-10">
+      <div class="grid grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-3">
+        <div class="text-left font-bold">{{ t('home.table.total') }}</div>
+        <div class="text-right space-y-1">
+          <div class="font-bold">{{ t('home.table.total') }}</div>
+          <div class="text-sm text-red-400">{{ t('home.table.expenses') }}: {{ formattedTotalExpenses }}</div>
+          <div class="text-sm text-green-500">{{ t('home.table.income') }}: {{ formattedTotalIncome }}</div>
+          <div :class="`text-sm font-semibold ${balance >= 0 ? 'text-green-500' : 'text-red-400'}`">
+            {{ t('home.table.balance') }}: {{ formattedBalance }}
+          </div>
+        </div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -32,12 +52,32 @@ const props = defineProps<{
   loading: boolean
 }>()
 
-const totalAmount = computed(() => {
-  return props.modelValue.reduce((sum, expense) => sum + (expense.amount || 0), 0)
+const totalExpenses = computed(() => {
+  return props.modelValue
+    .filter((expense) => expense.type === 'expense')
+    .reduce((sum, expense) => sum + (expense.amount || 0), 0)
 })
 
-const formattedTotal = computed(() => {
-  return formatCurrency(totalAmount.value)
+const totalIncome = computed(() => {
+  return props.modelValue
+    .filter((expense) => expense.type === 'income')
+    .reduce((sum, expense) => sum + (expense.amount || 0), 0)
+})
+
+const balance = computed(() => {
+  return totalIncome.value - totalExpenses.value
+})
+
+const formattedTotalExpenses = computed(() => {
+  return formatCurrency(totalExpenses.value)
+})
+
+const formattedTotalIncome = computed(() => {
+  return formatCurrency(totalIncome.value)
+})
+
+const formattedBalance = computed(() => {
+  return formatCurrency(balance.value)
 })
 
 const emit = defineEmits<{
@@ -81,8 +121,7 @@ function getRowItems(row: Row<Expense>) {
 const columns: TableColumn<Expense>[] = [
   {
     accessorKey: 'name',
-    header: () => h('div', { class: 'text-left' }, t('home.table.name')),
-    footer: () => h('div', { class: 'text-left font-bold' }, 'Total')
+    header: () => h('div', { class: 'text-left' }, t('home.table.name'))
   },
   {
     accessorKey: 'amount',
@@ -90,10 +129,11 @@ const columns: TableColumn<Expense>[] = [
     cell: ({ row }) => {
       const amount = Number.parseFloat(row.getValue('amount'))
       const formatted = formatCurrency(amount)
+      const transactionType = row.original.type
+      const colorClass = transactionType === 'income' ? 'text-green-500' : 'text-red-400'
 
-      return h('div', { class: 'text-right font-medium' }, formatted)
-    },
-    footer: () => h('div', { class: 'text-right font-bold' }, formattedTotal.value)
+      return h('div', { class: `text-right font-medium ${colorClass}` }, formatted)
+    }
   },
   {
     accessorKey: 'account',
