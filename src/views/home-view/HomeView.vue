@@ -11,16 +11,27 @@
           </div>
         </template>
 
-        <ExpenseTable :model-value="(expenses as Expense[]) || []" @update:model-value="handleUpdateExpenses"
-          @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
+        <template #default>
+          <div class="space-y-4">
+            <!-- Filtre par compte -->
+            <div class="flex items-center gap-4">
+              <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
+              <USelect v-model="selectedAccount" :items="accountFilterOptions"
+                :placeholder="$t('home.filter.allAccounts')" class="w-48" clearable />
+            </div>
+
+            <ExpenseTable :model-value="filteredExpenses" @update:model-value="handleUpdateExpenses"
+              @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
+          </div>
+        </template>
       </UCard>
     </div>
   </UContainer>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import ExpenseTable, { type Expense } from './components/ExpenseTable.vue'
+import { onMounted, ref, computed } from 'vue'
+import ExpenseTable, { type Expense, type Account } from './components/ExpenseTable.vue'
 import ExpenseForm from './components/ExpenseForm.vue'
 import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
 import { useCreateFireDoc } from '@/composables/firebase/useCreateFireDoc'
@@ -34,6 +45,23 @@ const { add: addToast } = useToast()
 const { data: expenses, doRequest: getExpenses, isLoading: isLoadingExpenses } = useReadFireDoc()
 const { doRequest: createExpense, isLoading: isCreatingExpense } = useCreateFireDoc()
 const { doRequest: deleteExpense } = useDeleteFireDoc()
+
+const selectedAccount = ref<Account | null>(null)
+
+const accountFilterOptions = computed(() => [
+  { label: t('home.filter.allAccounts'), value: null },
+  { label: 'CIC', value: 'CIC' },
+  { label: 'Revolut', value: 'Revolut' },
+  { label: 'Crypto.com', value: 'Crypto.com' }
+])
+
+const filteredExpenses = computed(() => {
+  const allExpenses = (expenses.value as Expense[]) || []
+  if (!selectedAccount.value) {
+    return allExpenses
+  }
+  return allExpenses.filter((expense) => expense.account === selectedAccount.value)
+})
 
 interface ExpenseFormInstance {
   resetForm: () => void

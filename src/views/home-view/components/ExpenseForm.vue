@@ -1,12 +1,12 @@
 <template>
   <UCard class="bg-muted/50">
     <UForm :state="formState" @submit="handleSubmit" class="flex flex-col md:flex-row md:justify-between gap-4">
-      <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-        <UInput v-model="formState.name" :placeholder="$t('home.form.name')" size="lg" class="w-full" />
+      <div class="flex flex-col md:flex-row gap-4 w-full flex-1 md:w-auto">
+        <UInput v-model="formState.name" :placeholder="$t('home.form.name')" size="lg" class="w-full md:flex-1" />
         <UInputNumber v-model="formState.amount" :increment="false" :decrement="false"
-          :placeholder="$t('home.form.amount')" size="lg" class="w-full md:w-auto" />
+          :placeholder="$t('home.form.amount')" size="lg" class="w-full md:flex-1" />
         <USelect v-model="formState.account" :items="accountsOptions" :placeholder="$t('home.form.account')" size="lg"
-          width="full" class="w-full md:w-auto" />
+          class="w-full md:flex-1" />
       </div>
 
       <div class="flex flex-row gap-2 w-full md:w-auto">

@@ -18,6 +18,10 @@
     "toast": {
       "delete": "Dépense supprimée avec succès",
       "add": "Dépense ajoutée avec succès"
+    },
+    "filter": {
+      "account": "Filtrer par compte",
+      "allAccounts": "Tous les comptes"
     }
   }
 }
