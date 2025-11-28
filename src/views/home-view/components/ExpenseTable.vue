@@ -5,7 +5,7 @@
         loading-color="primary" />
     </div>
     <!-- Footer fixe -->
-    <div class="sticky bottom-0 bg-background dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 z-10">
+    <div class="sticky bottom-0 bg-background border-t border-gray-200 dark:border-gray-700 z-10">
       <div class="grid grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-3">
         <div class="text-left font-bold">{{ t('home.table.total') }}</div>
         <div class="text-right space-y-1">

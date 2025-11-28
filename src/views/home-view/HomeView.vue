@@ -6,8 +6,12 @@
         <template #header>
           <div class="space-y-4">
             <h2 class="text-xl font-semibold">{{ $t('home.title') }}</h2>
-            <!-- Formulaire d'ajout -->
-            <ExpenseForm ref="expenseFormRef" @add="handleAddExpense" :loading="isCreatingExpense" />
+            <!-- Formulaire d'ajout avec accordion NuxtUI -->
+            <UAccordion :items="accordionItems" class="w-full">
+              <template #formContent>
+                <ExpenseForm ref="expenseFormRef" @add="handleAddExpense" :loading="isCreatingExpense" />
+              </template>
+            </UAccordion>
           </div>
         </template>
 
@@ -57,6 +61,15 @@ const { doRequest: deleteExpense } = useDeleteFireDoc()
 
 const selectedAccount = ref<Account | null>(null)
 const selectedType = ref<'expense' | 'income' | null>(null)
+
+const accordionItems = computed(() => [
+  {
+    label: t('home.form.add'),
+    icon: 'i-lucide-plus-circle',
+    slot: 'formContent',
+    defaultOpen: true
+  }
+])
 
 const accountFilterOptions = computed(() => [
   { label: t('home.filter.allAccounts'), value: null },

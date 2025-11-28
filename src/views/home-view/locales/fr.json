@@ -9,7 +9,9 @@
       "income": "Revenu",
       "account": "Compte",
       "add": "Ajouter",
-      "reset": "Réinitialiser"
+      "reset": "Réinitialiser",
+      "show": "Afficher le formulaire",
+      "hide": "Masquer le formulaire"
     },
     "table": {
       "name": "Nom",

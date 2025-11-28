@@ -4,13 +4,6 @@ import RouteName from './RouteName'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: RouteName.ROOT,
-    redirect: {
-      name: RouteName.HOME
-    }
-  },
-  {
-    path: '/home',
     name: RouteName.HOME,
     component: () => import('../views/home-view/HomeView.vue'),
     meta: {
