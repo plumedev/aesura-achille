@@ -13,7 +13,8 @@
         <UButton type="button" variant="ghost" @click="resetForm" class="flex-1 md:flex-initial">
           {{ $t('home.form.reset') }}
         </UButton>
-        <UButton type="submit" color="primary" :disabled="!isFormValid" class=" w-auto mx-auto">
+        <UButton type="submit" color="primary" :disabled="!isFormValid || props.loading" :loading="props.loading"
+          class=" w-auto mx-auto">
           {{ $t('home.form.add') }}
         </UButton>
       </div>
@@ -24,18 +25,17 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { resolveComponent } from 'vue'
-import { useI18n } from 'vue-i18n'
 import type { Account, Expense } from './ExpenseTable.vue'
 import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
-import { useToast } from '@nuxt/ui/composables'
 
 const USelect = resolveComponent('USelect')
 const UInputNumber = resolveComponent('UInputNumber')
 
 const { data: accounts, doRequest: getAccounts } = useReadFireDoc()
 
-const { t } = useI18n()
-const { add: addToast } = useToast()
+const props = defineProps<{
+  loading?: boolean
+}>()
 
 const formState = ref({
   name: '',
@@ -78,13 +78,7 @@ const handleSubmit = () => {
   }
 
   emit('add', newExpense)
-  resetForm()
 
-  addToast({
-    title: t('home.toast.add'),
-    color: 'success',
-    icon: 'i-lucide-circle-check'
-  })
 }
 
 const accountsOptions = computed(() => {
@@ -95,5 +89,9 @@ onMounted(async () => {
   await getAccounts({
     collectionName: 'accounts'
   })
+})
+
+defineExpose({
+  resetForm
 })
 </script>

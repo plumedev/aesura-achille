@@ -6,19 +6,21 @@ import { useToast } from '@nuxt/ui/composables'
 export interface CreateFireDocParams {
   collectionName: string
   data: DocumentData
+  showToast?: boolean
 }
 
 export function useCreateFireDoc() {
-  const runServices = async ({ collectionName, data }: CreateFireDocParams): Promise<string> => {
+  const runServices = async ({ collectionName, data, showToast = true }: CreateFireDocParams): Promise<string> => {
     try {
       const db = getDb()
       const docRef = await addDoc(collection(db, collectionName), data)
-      // Utilisation directe du toast de NuxtUI via le composable global
-      const { add } = useToast()
-      add({
-        title: 'Document créé avec succès !',
-        color: 'success'
-      })
+      if (showToast) {
+        const { add } = useToast()
+        add({
+          title: 'Document créé avec succès !',
+          color: 'success'
+        })
+      }
       return docRef.id
     } catch (error: unknown) {
       const { add } = useToast()
