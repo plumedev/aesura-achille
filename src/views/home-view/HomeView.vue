@@ -1,11 +1,19 @@
 <template>
   <UContainer class="min-h-screen py-8">
     <div class="max-w-7xl mx-auto space-y-6">
-      <!-- Tableau de dépenses -->
+      <!-- Carte principale -->
       <UCard>
         <template #header>
           <div class="space-y-4">
-            <h2 class="text-xl font-semibold">{{ $t('home.title') }}</h2>
+            <div class="flex items-center justify-between">
+              <h2 class="text-xl font-semibold">{{ $t('home.title') }}</h2>
+              <!-- Switch entre tableau et liste -->
+              <div class="flex items-center gap-3">
+                <span class="text-sm font-medium">{{ $t('home.view.table') }}</span>
+                <USwitch v-model="isListView" />
+                <span class="text-sm font-medium">{{ $t('home.view.list') }}</span>
+              </div>
+            </div>
             <!-- Formulaire d'ajout avec accordion NuxtUI -->
             <UAccordion :items="accordionItems" class="w-full">
               <template #formContent>
@@ -33,8 +41,13 @@
               </div>
             </div>
 
-            <ExpenseTable :model-value="filteredExpenses" @update:model-value="handleUpdateExpenses"
-              @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
+            <!-- Vue tableau -->
+            <ExpenseTable v-if="viewMode === 'table'" :model-value="filteredExpenses"
+              @update:model-value="handleUpdateExpenses" @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
+
+            <!-- Vue liste -->
+            <ExpenseList v-else :model-value="filteredExpenses" @delete="handleDeleteExpense"
+              :loading="isLoadingExpenses" />
           </div>
         </template>
       </UCard>
@@ -45,6 +58,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
 import ExpenseTable, { type Expense } from './components/ExpenseTable.vue'
+import ExpenseList from './components/ExpenseList.vue'
 import ExpenseForm from './components/ExpenseForm.vue'
 import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
 import { useCreateFireDoc } from '@/composables/firebase/useCreateFireDoc'
@@ -62,6 +76,11 @@ const { doRequest: deleteExpense } = useDeleteFireDoc()
 
 const selectedAccount = ref<string | undefined>(undefined)
 const selectedType = ref<'expense' | 'income' | undefined>(undefined)
+const isListView = ref<boolean>(true)
+
+const viewMode = computed<'table' | 'list'>(() => {
+  return isListView.value ? 'list' : 'table'
+})
 
 const accordionItems = computed(() => [
   {

@@ -33,6 +33,13 @@
       "allTypes": "Tous les types",
       "account": "Filtrer par compte",
       "allAccounts": "Tous les comptes"
+    },
+    "view": {
+      "table": "Tableau",
+      "list": "Liste"
+    },
+    "list": {
+      "empty": "Aucune transaction"
     }
   }
 }
