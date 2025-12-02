@@ -22,8 +22,8 @@
               <!-- Filtre par type -->
               <div class="flex items-center gap-4">
                 <label class="text-sm font-medium">{{ $t('home.filter.type') }}</label>
-                <USelect v-model="selectedType" :items="typeFilterOptions"
-                  :placeholder="$t('home.filter.allTypes')" class="w-48" clearable />
+                <USelect v-model="selectedType" :items="typeFilterOptions" :placeholder="$t('home.filter.allTypes')"
+                  class="w-48" clearable />
               </div>
               <!-- Filtre par compte -->
               <div class="flex items-center gap-4">
@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-import ExpenseTable, { type Expense, type Account } from './components/ExpenseTable.vue'
+import ExpenseTable, { type Expense } from './components/ExpenseTable.vue'
 import ExpenseForm from './components/ExpenseForm.vue'
 import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
 import { useCreateFireDoc } from '@/composables/firebase/useCreateFireDoc'
@@ -56,11 +56,12 @@ const { t } = useI18n()
 const { add: addToast } = useToast()
 
 const { data: expenses, doRequest: getExpenses, isLoading: isLoadingExpenses } = useReadFireDoc()
+const { data: accounts, doRequest: getAccounts } = useReadFireDoc()
 const { doRequest: createExpense, isLoading: isCreatingExpense } = useCreateFireDoc()
 const { doRequest: deleteExpense } = useDeleteFireDoc()
 
-const selectedAccount = ref<Account | null>(null)
-const selectedType = ref<'expense' | 'income' | null>(null)
+const selectedAccount = ref<string | undefined>(undefined)
+const selectedType = ref<'expense' | 'income' | undefined>(undefined)
 
 const accordionItems = computed(() => [
   {
@@ -71,15 +72,24 @@ const accordionItems = computed(() => [
   }
 ])
 
-const accountFilterOptions = computed(() => [
-  { label: t('home.filter.allAccounts'), value: null },
-  { label: 'CIC', value: 'CIC' },
-  { label: 'Revolut', value: 'Revolut' },
-  { label: 'Crypto.com', value: 'Crypto.com' }
-])
+const accountFilterOptions = computed(() => {
+  const options: Array<{ label: string; value: string | undefined }> = [
+    { label: t('home.filter.allAccounts'), value: undefined }
+  ]
+
+  if (accounts.value) {
+    const accountOptions = accounts.value.map((account: any) => ({
+      label: account.accountName,
+      value: account.accountName as string
+    }))
+    options.push(...accountOptions)
+  }
+
+  return options
+})
 
 const typeFilterOptions = computed(() => [
-  { label: t('home.filter.allTypes'), value: null },
+  { label: t('home.filter.allTypes'), value: undefined },
   { label: t('home.form.expense'), value: 'expense' },
   { label: t('home.form.income'), value: 'income' }
 ])
@@ -108,9 +118,14 @@ interface ExpenseFormInstance {
 const expenseFormRef = ref<ExpenseFormInstance | null>(null)
 
 onMounted(async () => {
-  await getExpenses({
-    collectionName: 'transactions',
-  })
+  await Promise.all([
+    getExpenses({
+      collectionName: 'transactions',
+    }),
+    getAccounts({
+      collectionName: 'accounts',
+    })
+  ])
 
   if (expenses.value && Array.isArray(expenses.value)) {
     expenses.value = expenses.value as Expense[]

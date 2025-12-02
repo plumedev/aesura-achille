@@ -44,13 +44,6 @@ export function useReadFireDoc() {
           ...docSnap.data()
         }))
 
-        // Utilisation directe du toast de NuxtUI via le composable global
-        // const { add } = useToast()
-        // add({
-        //   title: 'Données récupérées avec succès !',
-        //   color: 'success'
-        // })
-
         return result
       }
     } catch (error: unknown) {
