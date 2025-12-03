@@ -8,7 +8,7 @@
 
     <div class="space-y-4">
       <!-- Filtres -->
-      <div class="flex flex-col justify-between md:flex-row items-start md:items-center gap-4 my-4">
+      <div class="flex flex-col justify-between md:flex-row items-start md:items-center hidden md:flex gap-4 my-4">
         <!-- Filtre par type -->
         <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
           <div class="flex items-center gap-4">
@@ -108,9 +108,9 @@
         <div class="flex items-center justify-between">
           <!-- Switch entre tableau et liste -->
           <div class="flex items-center gap-3">
-            <span class="text-sm font-medium">{{ $t('home.view.table') }}</span>
+            <span class="text-sm font-medium"><UIcon name="i-lucide-table" class="size-5" /></span>
             <USwitch v-model="isListView" />
-            <span class="text-sm font-medium">{{ $t('home.view.list') }}</span>
+            <span class="text-sm font-medium"><UIcon name="i-lucide-list" class="size-5" /></span>
           </div>
         </div>
       </div>
