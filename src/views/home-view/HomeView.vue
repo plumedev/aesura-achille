@@ -1,58 +1,121 @@
 <template>
-  <UContainer class="min-h-screen py-8">
-    <div class="max-w-7xl mx-auto space-y-6">
-      <!-- Carte principale -->
-      <UCard>
-        <template #header>
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <h2 class="text-xl font-semibold">{{ $t('home.title') }}</h2>
-              <!-- Switch entre tableau et liste -->
-              <div class="flex items-center gap-3">
-                <span class="text-sm font-medium">{{ $t('home.view.table') }}</span>
-                <USwitch v-model="isListView" />
-                <span class="text-sm font-medium">{{ $t('home.view.list') }}</span>
-              </div>
-            </div>
-            <!-- Formulaire d'ajout avec accordion NuxtUI -->
-            <UAccordion :items="accordionItems" class="w-full">
-              <template #formContent>
-                <ExpenseForm ref="expenseFormRef" @add="handleAddExpense" :loading="isCreatingExpense" />
-              </template>
-            </UAccordion>
+  <UContainer class="min-h-screen py-4">
+    <!-- Carte principale -->
+
+    <div class="space-y-4">
+      <ExpenseForm class="hidden md:block" ref="expenseFormRef" @add="handleAddExpense" :loading="isCreatingExpense" />
+    </div>
+
+    <div class="space-y-4">
+      <!-- Filtres -->
+      <div class="flex flex-col justify-between md:flex-row items-start md:items-center gap-4 my-4">
+        <!-- Filtre par type -->
+        <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+          <div class="flex items-center gap-4">
+            <label class="text-sm font-medium">{{ $t('home.filter.type') }}</label>
+            <USelect
+              v-model="selectedType"
+              :items="typeFilterOptions"
+              :placeholder="$t('home.filter.allTypes')"
+              class="w-48"
+              clearable
+            />
           </div>
-        </template>
-
-        <template #default>
-          <div class="space-y-4">
-            <!-- Filtres -->
-            <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
-              <!-- Filtre par type -->
-              <div class="flex items-center gap-4">
-                <label class="text-sm font-medium">{{ $t('home.filter.type') }}</label>
-                <USelect v-model="selectedType" :items="typeFilterOptions" :placeholder="$t('home.filter.allTypes')"
-                  class="w-48" clearable />
-              </div>
-              <!-- Filtre par compte -->
-              <div class="flex items-center gap-4">
-                <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
-                <USelect v-model="selectedAccount" :items="accountFilterOptions"
-                  :placeholder="$t('home.filter.allAccounts')" class="w-48" clearable />
-              </div>
-            </div>
-
-            <!-- Vue tableau -->
-            <ExpenseTable v-if="viewMode === 'table'" :model-value="filteredExpenses"
-              @update:model-value="handleUpdateExpenses" @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
-
-            <!-- Vue liste -->
-            <ExpenseList v-else :model-value="filteredExpenses" @delete="handleDeleteExpense"
-              :loading="isLoadingExpenses" />
+          <!-- Filtre par compte -->
+          <div class="flex items-center gap-4">
+            <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
+            <USelect
+              v-model="selectedAccount"
+              :items="accountFilterOptions"
+              :placeholder="$t('home.filter.allAccounts')"
+              class="w-48"
+              clearable
+            />
           </div>
-        </template>
-      </UCard>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <!-- Switch entre tableau et liste -->
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-medium">{{ $t('home.view.table') }}</span>
+            <USwitch v-model="isListView" />
+            <span class="text-sm font-medium">{{ $t('home.view.list') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vue tableau -->
+      <ExpenseTable
+        v-if="viewMode === 'table'"
+        :model-value="filteredExpenses"
+        @update:model-value="handleUpdateExpenses"
+        @delete="handleDeleteExpense"
+        :loading="isLoadingExpenses"
+      />
+
+      <!-- Vue liste -->
+      <ExpenseList v-else :model-value="filteredExpenses" @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
     </div>
   </UContainer>
+
+  <NavbarFixed class="md:hidden bg-dark-500">
+    <template #content>
+      <div class="flex justify-between">
+        <div>
+          <UModal id="add-transaction-modal">
+            <UButton icon="i-lucide-plus" :label="$t('home.form.addTransaction')" color="primary" variant="solid" />
+
+            <template #content>
+              <h3 class="p-4 text-lg font-bold">{{ $t('home.form.add') }}</h3>
+              <ExpenseForm ref="expenseFormRef" @add="handleAddExpense" :loading="isCreatingExpense" />
+            </template>
+          </UModal>
+
+          <UModal id="filter-modal" class="mx-2">
+            <UButton icon="i-lucide-filter" :label="$t('home.form.filters')" color="neutral" variant="solid" />
+
+            <template #content>
+              <div class="flex flex-col justify-between md:flex-row items-start md:items-center gap-4 p-4">
+                <!-- Filtre par type -->
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+                  <div class="flex items-center gap-4">
+                    <label class="text-sm font-medium">{{ $t('home.filter.type') }}</label>
+                    <USelect
+                      v-model="selectedType"
+                      :items="typeFilterOptions"
+                      :placeholder="$t('home.filter.allTypes')"
+                      class="w-48"
+                      clearable
+                    />
+                  </div>
+                  <!-- Filtre par compte -->
+                  <div class="flex items-center gap-4">
+                    <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
+                    <USelect
+                      v-model="selectedAccount"
+                      :items="accountFilterOptions"
+                      :placeholder="$t('home.filter.allAccounts')"
+                      class="w-48"
+                      clearable
+                    />
+                  </div>
+                </div>
+              </div>
+            </template>
+          </UModal>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <!-- Switch entre tableau et liste -->
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-medium">{{ $t('home.view.table') }}</span>
+            <USwitch v-model="isListView" />
+            <span class="text-sm font-medium">{{ $t('home.view.list') }}</span>
+          </div>
+        </div>
+      </div>
+    </template>
+  </NavbarFixed>
 </template>
 
 <script setup lang="ts">
@@ -65,6 +128,7 @@ import { useCreateFireDoc } from '@/composables/firebase/useCreateFireDoc'
 import { useDeleteFireDoc } from '@/composables/firebase/useDeleteFireDoc'
 import { useToast } from '@nuxt/ui/composables'
 import { useI18n } from 'vue-i18n'
+import NavbarFixed from '@/components/NavbarFixed.vue'
 
 const { t } = useI18n()
 const { add: addToast } = useToast()
@@ -81,15 +145,6 @@ const isListView = ref<boolean>(true)
 const viewMode = computed<'table' | 'list'>(() => {
   return isListView.value ? 'list' : 'table'
 })
-
-const accordionItems = computed(() => [
-  {
-    label: t('home.form.add'),
-    icon: 'i-lucide-plus-circle',
-    slot: 'formContent',
-    defaultOpen: true
-  }
-])
 
 const accountFilterOptions = computed(() => {
   const options: Array<{ label: string; value: string | undefined }> = [
@@ -139,10 +194,10 @@ const expenseFormRef = ref<ExpenseFormInstance | null>(null)
 onMounted(async () => {
   await Promise.all([
     getExpenses({
-      collectionName: 'transactions',
+      collectionName: 'transactions'
     }),
     getAccounts({
-      collectionName: 'accounts',
+      collectionName: 'accounts'
     })
   ])
 
@@ -171,7 +226,7 @@ const handleAddExpense = async (expense: Expense) => {
 
     // Recharger les dépenses depuis Firebase pour avoir les données à jour
     await getExpenses({
-      collectionName: 'transactions',
+      collectionName: 'transactions'
     })
 
     if (expenses.value) {
@@ -201,7 +256,7 @@ const handleDeleteExpense = async (id: string) => {
     })
 
     await getExpenses({
-      collectionName: 'transactions',
+      collectionName: 'transactions'
     })
 
     if (expenses.value) {
