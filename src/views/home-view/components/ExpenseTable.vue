@@ -1,8 +1,13 @@
 <template>
   <div class="flex flex-col max-h-[60vh]">
     <div class="overflow-y-auto flex-1">
-      <UTable :data="modelValue" :columns="columns" :loading="loading" loading-animation="carousel"
-        loading-color="primary" />
+      <UTable
+        :data="modelValue"
+        :columns="columns"
+        :loading="loading"
+        loading-animation="carousel"
+        loading-color="primary"
+      />
     </div>
     <!-- Footer fixe -->
     <div class="sticky bottom-0 bg-background border-t border-gray-200 dark:border-gray-700 z-10">
@@ -82,7 +87,7 @@ const formattedBalance = computed(() => {
 
 const emit = defineEmits<{
   'update:modelValue': [value: Expense[]]
-  'delete': [id: string]
+  delete: [id: string]
 }>()
 
 const deleteExpense = (id: string) => {
@@ -172,6 +177,5 @@ const columns: TableColumn<Expense>[] = [
       )
     }
   }
-
 ]
 </script>

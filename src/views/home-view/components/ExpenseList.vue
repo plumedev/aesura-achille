@@ -83,7 +83,7 @@
           <p>{{ $t('home.list.empty') }}</p>
         </div>
 
-        <div v-else class="max-h-[60vh] overflow-y-auto space-y-2">
+        <div v-else class="overflow-y-auto space-y-2" style="height: calc(100vh - 330px)">
           <TransactionItem
             v-for="expense in modelValue"
             :key="expense.id"

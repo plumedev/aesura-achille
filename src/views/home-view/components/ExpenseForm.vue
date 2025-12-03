@@ -3,20 +3,42 @@
     <UForm :state="formState" @submit="handleSubmit" class="flex flex-col md:flex-row md:justify-between gap-4">
       <div class="flex flex-col md:flex-row gap-4 w-full flex-1 md:w-auto">
         <UInput v-model="formState.name" :placeholder="$t('home.form.name')" size="lg" class="w-full md:flex-1" />
-        <UInputNumber v-model="formState.amount" :increment="false" :decrement="false" :step="0.01"
-          :placeholder="$t('home.form.amount')" size="lg" class="w-full md:flex-1" />
-        <USelect v-model="formState.type" :items="transactionTypeOptions" :placeholder="$t('home.form.type')" size="lg"
-          class="w-full md:flex-1" />
-        <USelect v-model="formState.account" :items="accountsOptions" :placeholder="$t('home.form.account')" size="lg"
-          class="w-full md:flex-1" />
+        <UInputNumber
+          v-model="formState.amount"
+          :increment="false"
+          :decrement="false"
+          :step="0.01"
+          :placeholder="$t('home.form.amount')"
+          size="lg"
+          class="w-full md:flex-1"
+        />
+        <USelect
+          v-model="formState.type"
+          :items="transactionTypeOptions"
+          :placeholder="$t('home.form.type')"
+          size="lg"
+          class="w-full md:flex-1"
+        />
+        <USelect
+          v-model="formState.account"
+          :items="accountsOptions"
+          :placeholder="$t('home.form.account')"
+          size="lg"
+          class="w-full md:flex-1"
+        />
       </div>
 
       <div class="flex flex-row gap-2 w-full md:w-auto">
         <UButton type="button" variant="ghost" @click="resetForm" class="flex-1 md:flex-initial">
           {{ $t('home.form.reset') }}
         </UButton>
-        <UButton type="submit" color="primary" :disabled="!isFormValid || props.loading" :loading="props.loading"
-          class=" w-auto mx-auto">
+        <UButton
+          type="submit"
+          color="primary"
+          :disabled="!isFormValid || props.loading"
+          :loading="props.loading"
+          class="w-auto mx-auto"
+        >
           {{ $t('home.form.add') }}
         </UButton>
       </div>
@@ -93,7 +115,6 @@ const handleSubmit = () => {
   }
 
   emit('add', newExpense)
-
 }
 
 const accountsOptions = computed(() => {

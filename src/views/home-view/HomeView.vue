@@ -1,5 +1,5 @@
 <template>
-  <UContainer class="min-h-screen py-4">
+  <UContainer id="home-container" class="py-4 border-2 border-red-500" height="calc(100vh - 100px)">
     <!-- Carte principale -->
 
     <div class="space-y-4">
