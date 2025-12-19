@@ -51,6 +51,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'delete': [id: string]
+  'edit': [expense: Expense]
 }>()
 
 const getAccountColor = (account: Account): 'primary' | 'neutral' | 'info' => {
@@ -83,6 +84,10 @@ const handleDelete = () => {
   emit('delete', props.transaction.id)
 }
 
+const handleEdit = () => {
+  emit('edit', props.transaction)
+}
+
 const getItemActions = () => {
   return [
     {
@@ -94,6 +99,13 @@ const getItemActions = () => {
       icon: 'i-lucide-trash-2',
       onSelect() {
         handleDelete()
+      }
+    },
+    {
+      label: t('home.table.edit'),
+      icon: 'i-lucide-edit',
+      onSelect() {
+        handleEdit()
       }
     }
   ]
