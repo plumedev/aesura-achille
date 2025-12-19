@@ -7,30 +7,25 @@
     </div>
 
     <div class="space-y-4">
+      <!-- Navigation mois -->
+      <div class="flex justify-center my-4">
+        <MonthNavigation v-model:monthYear="selectedMonthYear" />
+      </div>
+
       <!-- Filtres -->
       <div class="flex flex-col justify-between md:flex-row items-start md:items-center hidden md:flex gap-4 my-4">
         <!-- Filtre par type -->
         <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
           <div class="flex items-center gap-4">
             <label class="text-sm font-medium">{{ $t('home.filter.type') }}</label>
-            <USelect
-              v-model="selectedType"
-              :items="typeFilterOptions"
-              :placeholder="$t('home.filter.allTypes')"
-              class="w-48"
-              clearable
-            />
+            <USelect v-model="selectedType" :items="typeFilterOptions" :placeholder="$t('home.filter.allTypes')"
+              class="w-48" clearable />
           </div>
           <!-- Filtre par compte -->
           <div class="flex items-center gap-4">
             <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
-            <USelect
-              v-model="selectedAccount"
-              :items="accountFilterOptions"
-              :placeholder="$t('home.filter.allAccounts')"
-              class="w-48"
-              clearable
-            />
+            <USelect v-model="selectedAccount" :items="accountFilterOptions"
+              :placeholder="$t('home.filter.allAccounts')" class="w-48" clearable />
           </div>
         </div>
 
@@ -45,13 +40,8 @@
       </div>
 
       <!-- Vue tableau -->
-      <ExpenseTable
-        v-if="viewMode === 'table'"
-        :model-value="filteredExpenses"
-        @update:model-value="handleUpdateExpenses"
-        @delete="handleDeleteExpense"
-        :loading="isLoadingExpenses"
-      />
+      <ExpenseTable v-if="viewMode === 'table'" :model-value="filteredExpenses"
+        @update:model-value="handleUpdateExpenses" @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
 
       <!-- Vue liste -->
       <ExpenseList v-else :model-value="filteredExpenses" @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
@@ -80,24 +70,14 @@
                 <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
                   <div class="flex items-center gap-4">
                     <label class="text-sm font-medium">{{ $t('home.filter.type') }}</label>
-                    <USelect
-                      v-model="selectedType"
-                      :items="typeFilterOptions"
-                      :placeholder="$t('home.filter.allTypes')"
-                      class="w-48"
-                      clearable
-                    />
+                    <USelect v-model="selectedType" :items="typeFilterOptions" :placeholder="$t('home.filter.allTypes')"
+                      class="w-48" clearable />
                   </div>
                   <!-- Filtre par compte -->
                   <div class="flex items-center gap-4">
                     <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
-                    <USelect
-                      v-model="selectedAccount"
-                      :items="accountFilterOptions"
-                      :placeholder="$t('home.filter.allAccounts')"
-                      class="w-48"
-                      clearable
-                    />
+                    <USelect v-model="selectedAccount" :items="accountFilterOptions"
+                      :placeholder="$t('home.filter.allAccounts')" class="w-48" clearable />
                   </div>
                 </div>
               </div>
@@ -108,9 +88,13 @@
         <div class="flex items-center justify-between">
           <!-- Switch entre tableau et liste -->
           <div class="flex items-center gap-3">
-            <span class="text-sm font-medium"><UIcon name="i-lucide-table" class="size-5" /></span>
+            <span class="text-sm font-medium">
+              <UIcon name="i-lucide-table" class="size-5" />
+            </span>
             <USwitch v-model="isListView" />
-            <span class="text-sm font-medium"><UIcon name="i-lucide-list" class="size-5" /></span>
+            <span class="text-sm font-medium">
+              <UIcon name="i-lucide-list" class="size-5" />
+            </span>
           </div>
         </div>
       </div>
@@ -123,12 +107,14 @@ import { onMounted, ref, computed } from 'vue'
 import ExpenseTable, { type Expense } from './components/ExpenseTable.vue'
 import ExpenseList from './components/ExpenseList.vue'
 import ExpenseForm from './components/ExpenseForm.vue'
+import MonthNavigation from './components/children/MonthNavigation.vue'
 import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
 import { useCreateFireDoc } from '@/composables/firebase/useCreateFireDoc'
 import { useDeleteFireDoc } from '@/composables/firebase/useDeleteFireDoc'
 import { useToast } from '@nuxt/ui/composables'
 import { useI18n } from 'vue-i18n'
 import NavbarFixed from '@/components/NavbarFixed.vue'
+import { getCurrentMonth, isDateInMonth, type MonthYear } from '@/helpers/DateFormat.helper'
 
 const { t } = useI18n()
 const { add: addToast } = useToast()
@@ -137,6 +123,9 @@ const { data: expenses, doRequest: getExpenses, isLoading: isLoadingExpenses } =
 const { data: accounts, doRequest: getAccounts } = useReadFireDoc()
 const { doRequest: createExpense, isLoading: isCreatingExpense } = useCreateFireDoc()
 const { doRequest: deleteExpense } = useDeleteFireDoc()
+
+// État pour le mois/année sélectionné (initialisé au mois actuel)
+const selectedMonthYear = ref<MonthYear>(getCurrentMonth())
 
 const selectedAccount = ref<string | undefined>(undefined)
 const selectedType = ref<'expense' | 'income' | undefined>(undefined)
@@ -171,6 +160,11 @@ const typeFilterOptions = computed(() => [
 const filteredExpenses = computed(() => {
   const allExpenses = (expenses.value as Expense[]) || []
   let filtered = allExpenses
+
+  // Filtrer par mois/année sélectionné
+  filtered = filtered.filter((expense) =>
+    isDateInMonth(expense.date, selectedMonthYear.value.year, selectedMonthYear.value.month)
+  )
 
   // Filtrer par type
   if (selectedType.value) {
