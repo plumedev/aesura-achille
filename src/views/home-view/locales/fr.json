@@ -40,6 +40,10 @@
     },
     "list": {
       "empty": "Aucune transaction"
+    },
+    "navigation": {
+      "previousMonth": "Mois précédent",
+      "nextMonth": "Mois suivant"
     }
   }
 }
