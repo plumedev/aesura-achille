@@ -7,19 +7,26 @@ export interface UpdateFireDocParams {
   collectionName: string
   documentId: string
   data: Partial<DocumentData>
+  showToast?: boolean
 }
 
 export function useUpdateFireDoc() {
-  const runServices = async ({ collectionName, documentId, data }: UpdateFireDocParams): Promise<void> => {
+  const runServices = async ({
+    collectionName,
+    documentId,
+    data,
+    showToast = true
+  }: UpdateFireDocParams): Promise<void> => {
     try {
       const db = getDb()
       await updateDoc(doc(db, collectionName, documentId), data)
-      // Utilisation directe du toast de NuxtUI via le composable global
-      const { add } = useToast()
-      add({
-        title: 'Document modifié avec succès !',
-        color: 'success'
-      })
+      if (showToast) {
+        const { add } = useToast()
+        add({
+          title: 'Document modifié avec succès !',
+          color: 'success'
+        })
+      }
     } catch (error: unknown) {
       const { add } = useToast()
       if (error instanceof Error) {

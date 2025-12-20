@@ -32,26 +32,40 @@
       </UDropdownMenu>
     </div>
   </div>
+
+  <UModal id="edit-transaction-modal" v-model:open="open">
+    <template #content>
+      <h3 class="p-4 text-lg font-bold">{{ $t('home.form.update') }}</h3>
+      <div class="p-4">
+        <ExpenseForm :initial-data="transaction" :loading="loading" @update="handleUpdate" @add="handleUpdate" />
+      </div>
+    </template>
+  </UModal>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { resolveComponent } from 'vue'
+import { resolveComponent, ref } from 'vue'
 import type { Account, Expense } from '../ExpenseTable.vue'
 import { formatCurrency } from '@/helpers/NumberFormat.helper'
+import ExpenseForm from '../ExpenseForm.vue'
 
 const UBadge = resolveComponent('UBadge')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
+const UModal = resolveComponent('UModal')
+
+const open = ref(false)
 
 const { t } = useI18n()
 
 const props = defineProps<{
   transaction: Expense
+  loading?: boolean
 }>()
 
 const emit = defineEmits<{
   'delete': [id: string]
-  'edit': [expense: Expense]
+  'update': [expense: Expense]
 }>()
 
 const getAccountColor = (account: Account): 'primary' | 'neutral' | 'info' => {
@@ -85,7 +99,12 @@ const handleDelete = () => {
 }
 
 const handleEdit = () => {
-  emit('edit', props.transaction)
+  open.value = true
+}
+
+const handleUpdate = (expense: Expense) => {
+  emit('update', expense)
+  open.value = false
 }
 
 const getItemActions = () => {
