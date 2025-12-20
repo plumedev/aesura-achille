@@ -44,7 +44,8 @@
         @update:model-value="handleUpdateExpenses" @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
 
       <!-- Vue liste -->
-      <ExpenseList v-else :model-value="filteredExpenses" @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
+      <ExpenseList v-else :model-value="filteredExpenses" @delete="handleDeleteExpense" @update="handleUpdateExpense"
+        :loading="isLoadingExpenses" />
     </div>
   </UContainer>
 
@@ -111,6 +112,7 @@ import MonthNavigation from './components/children/MonthNavigation.vue'
 import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
 import { useCreateFireDoc } from '@/composables/firebase/useCreateFireDoc'
 import { useDeleteFireDoc } from '@/composables/firebase/useDeleteFireDoc'
+import { useUpdateFireDoc } from '@/composables/firebase/useUpdateFireDoc'
 import { useToast } from '@nuxt/ui/composables'
 import { useI18n } from 'vue-i18n'
 import NavbarFixed from '@/components/NavbarFixed.vue'
@@ -123,6 +125,7 @@ const { data: expenses, doRequest: getExpenses, isLoading: isLoadingExpenses } =
 const { data: accounts, doRequest: getAccounts } = useReadFireDoc()
 const { doRequest: createExpense, isLoading: isCreatingExpense } = useCreateFireDoc()
 const { doRequest: deleteExpense } = useDeleteFireDoc()
+const { doRequest: updateExpense } = useUpdateFireDoc()
 
 // État pour le mois/année sélectionné (initialisé au mois actuel)
 const selectedMonthYear = ref<MonthYear>(getCurrentMonth())
@@ -269,5 +272,43 @@ const handleDeleteExpense = async (id: string) => {
 
 const handleUpdateExpenses = (newExpenses: Expense[]) => {
   expenses.value = newExpenses
+}
+
+const handleUpdateExpense = async (expense: Expense) => {
+  try {
+    // Préparer les données à mettre à jour (sans l'ID)
+    const expenseData = {
+      name: expense.name,
+      amount: expense.amount,
+      account: expense.account,
+      date: expense.date,
+      type: expense.type
+    }
+
+    // Mettre à jour dans Firebase (sans toast automatique, on le gère nous-mêmes)
+    await updateExpense({
+      collectionName: 'transactions',
+      documentId: expense.id,
+      data: expenseData,
+      showToast: false
+    })
+
+    // Recharger les dépenses depuis Firebase pour avoir les données à jour
+    await getExpenses({
+      collectionName: 'transactions'
+    })
+
+    if (expenses.value) {
+      expenses.value = expenses.value
+    }
+
+    addToast({
+      title: t('home.toast.update'),
+      color: 'success',
+      icon: 'i-lucide-circle-check'
+    })
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de la dépense:', error)
+  }
 }
 </script>

@@ -10,8 +10,10 @@
       "account": "Compte",
       "add": "Ajouter",
       "addTransaction": "Ajouter une transaction",
+      "update": "Modifier",
       "reset": "Réinitialiser",
-      "filters": "Filtres"
+      "filters": "Filtres",
+      "editTransaction": "Mise à jour de {transaction}"
     },
     "table": {
       "name": "Nom",
@@ -19,6 +21,7 @@
       "account": "Compte",
       "actions": "Actions",
       "delete": "Supprimer",
+      "edit": "Modifier",
       "total": "Total",
       "expenses": "Dépenses",
       "income": "Revenus",
@@ -26,7 +29,8 @@
     },
     "toast": {
       "delete": "Transaction supprimée avec succès",
-      "add": "Transaction ajoutée avec succès"
+      "add": "Transaction ajoutée avec succès",
+      "update": "Transaction modifiée avec succès"
     },
     "filter": {
       "type": "Filtrer par type",

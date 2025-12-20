@@ -75,21 +75,15 @@
           <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-primary" />
         </div>
 
-        <div
-          v-else-if="modelValue.length === 0"
-          class="flex flex-col items-center justify-center py-12 text-gray-500 dark:text-gray-400"
-        >
+        <div v-else-if="modelValue.length === 0"
+          class="flex flex-col items-center justify-center py-12 text-gray-500 dark:text-gray-400">
           <UIcon name="i-lucide-inbox" class="w-12 h-12 mb-4" />
           <p>{{ $t('home.list.empty') }}</p>
         </div>
 
         <div v-else class="overflow-y-auto space-y-2" style="height: calc(100vh - 330px)">
-          <TransactionItem
-            v-for="expense in modelValue"
-            :key="expense.id"
-            :transaction="expense"
-            @delete="handleDeleteExpense"
-          />
+          <TransactionItem v-for="expense in modelValue" :key="expense.id" :transaction="expense" :loading="loading"
+            @delete="handleDeleteExpense" @update="handleUpdateExpense" />
         </div>
       </template>
     </UCard>
@@ -109,6 +103,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   delete: [id: string]
+  update: [expense: Expense]
 }>()
 
 const totalExpenses = computed(() => {
@@ -141,5 +136,9 @@ const formattedBalance = computed(() => {
 
 const handleDeleteExpense = (id: string) => {
   emit('delete', id)
+}
+
+const handleUpdateExpense = (expense: Expense) => {
+  emit('update', expense)
 }
 </script>
