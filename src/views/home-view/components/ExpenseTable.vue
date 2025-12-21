@@ -1,13 +1,8 @@
 <template>
   <div class="flex flex-col max-h-[60vh]">
     <div class="overflow-y-auto flex-1">
-      <UTable
-        :data="modelValue"
-        :columns="columns"
-        :loading="loading"
-        loading-animation="carousel"
-        loading-color="primary"
-      />
+      <UTable :data="modelValue" :columns="columns" :loading="loading" loading-animation="carousel"
+        loading-color="primary" />
     </div>
     <!-- Footer fixe -->
     <div class="sticky bottom-0 bg-background border-t border-gray-200 dark:border-gray-700 z-10">
@@ -34,6 +29,7 @@ import { useI18n } from 'vue-i18n'
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { formatCurrency } from '@/helpers/NumberFormat.helper'
+import type { IExpense, Account } from '@/interfaces/IExpense'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
@@ -41,19 +37,8 @@ const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 const { t } = useI18n()
 
-export type Account = 'CIC' | 'Revolut' | 'Crypto.com'
-
-export interface Expense {
-  id: string
-  name: string
-  amount: number
-  account: Account
-  date: string
-  type: string
-}
-
 const props = defineProps<{
-  modelValue: Expense[]
+  modelValue: IExpense[]
   loading: boolean
 }>()
 
@@ -86,7 +71,7 @@ const formattedBalance = computed(() => {
 })
 
 const emit = defineEmits<{
-  'update:modelValue': [value: Expense[]]
+  'update:modelValue': [value: IExpense[]]
   delete: [id: string]
 }>()
 
@@ -107,7 +92,7 @@ const getAccountColor = (account: Account): 'primary' | 'neutral' | 'info' => {
   }
 }
 
-function getRowItems(row: Row<Expense>) {
+function getRowItems(row: Row<IExpense>) {
   return [
     {
       type: 'label',
@@ -123,7 +108,7 @@ function getRowItems(row: Row<Expense>) {
   ]
 }
 
-const columns: TableColumn<Expense>[] = [
+const columns: TableColumn<IExpense>[] = [
   {
     accessorKey: 'name',
     header: () => h('div', { class: 'text-left' }, t('home.table.name'))

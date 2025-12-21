@@ -92,18 +92,18 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Expense } from './ExpenseTable.vue'
+import type { IExpense } from '@/interfaces/IExpense'
 import { formatCurrency } from '@/helpers/NumberFormat.helper'
 import TransactionItem from './children/TransactionItem.vue'
 
 const props = defineProps<{
-  modelValue: Expense[]
+  modelValue: IExpense[]
   loading: boolean
 }>()
 
 const emit = defineEmits<{
   delete: [id: string]
-  update: [expense: Expense]
+  update: [expense: IExpense]
 }>()
 
 const totalExpenses = computed(() => {
@@ -138,7 +138,7 @@ const handleDeleteExpense = (id: string) => {
   emit('delete', id)
 }
 
-const handleUpdateExpense = (expense: Expense) => {
+const handleUpdateExpense = (expense: IExpense) => {
   emit('update', expense)
 }
 </script>

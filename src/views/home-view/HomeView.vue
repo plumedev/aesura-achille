@@ -105,7 +105,9 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-import ExpenseTable, { type Expense } from './components/ExpenseTable.vue'
+import ExpenseTable from './components/ExpenseTable.vue'
+import type { IExpense } from '@/interfaces/IExpense'
+
 import ExpenseList from './components/ExpenseList.vue'
 import ExpenseForm from './components/ExpenseForm.vue'
 import MonthNavigation from './components/children/MonthNavigation.vue'
@@ -161,7 +163,7 @@ const typeFilterOptions = computed(() => [
 ])
 
 const filteredExpenses = computed(() => {
-  const allExpenses = (expenses.value as Expense[]) || []
+  const allExpenses = (expenses.value as IExpense[]) || []
   let filtered = allExpenses
 
   // Filtrer par mois/année sélectionné
@@ -199,11 +201,11 @@ onMounted(async () => {
   ])
 
   if (expenses.value && Array.isArray(expenses.value)) {
-    expenses.value = expenses.value as Expense[]
+    expenses.value = expenses.value as IExpense[]
   }
 })
 
-const handleAddExpense = async (expense: Expense) => {
+const handleAddExpense = async (expense: IExpense) => {
   try {
     // Préparer les données à sauvegarder (sans l'ID généré localement)
     const expenseData = {
@@ -270,11 +272,11 @@ const handleDeleteExpense = async (id: string) => {
   }
 }
 
-const handleUpdateExpenses = (newExpenses: Expense[]) => {
+const handleUpdateExpenses = (newExpenses: IExpense[]) => {
   expenses.value = newExpenses
 }
 
-const handleUpdateExpense = async (expense: Expense) => {
+const handleUpdateExpense = async (expense: IExpense) => {
   try {
     // Préparer les données à mettre à jour (sans l'ID)
     const expenseData = {

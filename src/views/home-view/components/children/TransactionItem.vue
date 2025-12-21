@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { resolveComponent, ref } from 'vue'
-import type { Account, Expense } from '../ExpenseTable.vue'
+import type { Account, IExpense } from '@/interfaces/IExpense'
 import { formatCurrency } from '@/helpers/NumberFormat.helper'
 import ExpenseForm from '../ExpenseForm.vue'
 
@@ -59,13 +59,13 @@ const open = ref(false)
 const { t } = useI18n()
 
 const props = defineProps<{
-  transaction: Expense
+  transaction: IExpense
   loading?: boolean
 }>()
 
 const emit = defineEmits<{
   'delete': [id: string]
-  'update': [expense: Expense]
+  'update': [expense: IExpense]
 }>()
 
 const getAccountColor = (account: Account): 'primary' | 'neutral' | 'info' => {
@@ -102,7 +102,7 @@ const handleEdit = () => {
   open.value = true
 }
 
-const handleUpdate = (expense: Expense) => {
+const handleUpdate = (expense: IExpense) => {
   emit('update', expense)
   open.value = false
 }
