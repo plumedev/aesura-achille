@@ -24,12 +24,14 @@
           <!-- Filtre par compte -->
           <div class="flex items-center gap-4">
             <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
-            <USelect v-model="selectedAccount" :items="accountFilterOptions"
-              :placeholder="$t('home.filter.allAccounts')" class="w-48" clearable />
+            <USelectMenu v-model="selectedAccounts" :items="accountFilterOptions"
+              :placeholder="$t('home.filter.allAccounts')" class="w-48" multiple />
           </div>
         </div>
 
         <div class="flex items-center justify-between">
+          <UButton class="mr-2" icon="i-lucide-import" :label="$t('home.modal.importPreviousMonth.button')"
+            color="primary" variant="solid" to="/import-previous-month" />
           <!-- Switch entre tableau et liste -->
           <div class="flex items-center gap-3">
             <span class="text-sm font-medium">{{ $t('home.view.table') }}</span>
@@ -77,8 +79,8 @@
                   <!-- Filtre par compte -->
                   <div class="flex items-center gap-4">
                     <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
-                    <USelect v-model="selectedAccount" :items="accountFilterOptions"
-                      :placeholder="$t('home.filter.allAccounts')" class="w-48" clearable />
+                    <USelectMenu v-model="selectedAccounts" :items="accountFilterOptions"
+                      :placeholder="$t('home.filter.allAccounts')" class="w-48" multiple />
                   </div>
                 </div>
               </div>
@@ -105,7 +107,8 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-import ExpenseTable, { type Expense } from './components/ExpenseTable.vue'
+import ExpenseTable from './components/ExpenseTable.vue'
+import type { IExpense } from '@/interfaces/IExpense'
 import ExpenseList from './components/ExpenseList.vue'
 import ExpenseForm from './components/ExpenseForm.vue'
 import MonthNavigation from './components/children/MonthNavigation.vue'
@@ -118,6 +121,7 @@ import { useI18n } from 'vue-i18n'
 import NavbarFixed from '@/components/NavbarFixed.vue'
 import { getCurrentMonth, isDateInMonth, type MonthYear } from '@/helpers/DateFormat.helper'
 
+
 const { t } = useI18n()
 const { add: addToast } = useToast()
 
@@ -127,31 +131,20 @@ const { doRequest: createExpense, isLoading: isCreatingExpense } = useCreateFire
 const { doRequest: deleteExpense } = useDeleteFireDoc()
 const { doRequest: updateExpense } = useUpdateFireDoc()
 
-// État pour le mois/année sélectionné (initialisé au mois actuel)
 const selectedMonthYear = ref<MonthYear>(getCurrentMonth())
 
-const selectedAccount = ref<string | undefined>(undefined)
+const selectedAccounts = ref<string[]>([])
 const selectedType = ref<'expense' | 'income' | undefined>(undefined)
 const isListView = ref<boolean>(true)
-
 const viewMode = computed<'table' | 'list'>(() => {
   return isListView.value ? 'list' : 'table'
 })
 
 const accountFilterOptions = computed(() => {
-  const options: Array<{ label: string; value: string | undefined }> = [
-    { label: t('home.filter.allAccounts'), value: undefined }
-  ]
-
   if (accounts.value) {
-    const accountOptions = accounts.value.map((account: any) => ({
-      label: account.accountName,
-      value: account.accountName as string
-    }))
-    options.push(...accountOptions)
+    return accounts.value.map((account: any) => account.accountName as string)
   }
-
-  return options
+  return []
 })
 
 const typeFilterOptions = computed(() => [
@@ -161,7 +154,7 @@ const typeFilterOptions = computed(() => [
 ])
 
 const filteredExpenses = computed(() => {
-  const allExpenses = (expenses.value as Expense[]) || []
+  const allExpenses = (expenses.value as IExpense[]) || []
   let filtered = allExpenses
 
   // Filtrer par mois/année sélectionné
@@ -174,9 +167,9 @@ const filteredExpenses = computed(() => {
     filtered = filtered.filter((expense) => expense.type === selectedType.value)
   }
 
-  // Filtrer par compte
-  if (selectedAccount.value) {
-    filtered = filtered.filter((expense) => expense.account === selectedAccount.value)
+  // Filtrer par compte (multi-sélection)
+  if (selectedAccounts.value.length > 0) {
+    filtered = filtered.filter((expense) => selectedAccounts.value.includes(expense.account as string))
   }
 
   return filtered
@@ -199,11 +192,11 @@ onMounted(async () => {
   ])
 
   if (expenses.value && Array.isArray(expenses.value)) {
-    expenses.value = expenses.value as Expense[]
+    expenses.value = expenses.value as IExpense[]
   }
 })
 
-const handleAddExpense = async (expense: Expense) => {
+const handleAddExpense = async (expense: IExpense) => {
   try {
     // Préparer les données à sauvegarder (sans l'ID généré localement)
     const expenseData = {
@@ -270,11 +263,11 @@ const handleDeleteExpense = async (id: string) => {
   }
 }
 
-const handleUpdateExpenses = (newExpenses: Expense[]) => {
+const handleUpdateExpenses = (newExpenses: IExpense[]) => {
   expenses.value = newExpenses
 }
 
-const handleUpdateExpense = async (expense: Expense) => {
+const handleUpdateExpense = async (expense: IExpense) => {
   try {
     // Préparer les données à mettre à jour (sans l'ID)
     const expenseData = {
@@ -311,4 +304,7 @@ const handleUpdateExpense = async (expense: Expense) => {
     console.error('Erreur lors de la mise à jour de la dépense:', error)
   }
 }
+
+
+
 </script>

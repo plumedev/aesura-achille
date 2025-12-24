@@ -48,6 +48,18 @@
     "navigation": {
       "previousMonth": "Mois précédent",
       "nextMonth": "Mois suivant"
+    },
+    "modal": {
+      "importPreviousMonth": {
+        "button": "Importer mois précédent",
+        "title": "Synthèse des transactions du mois précédent",
+        "actions": {
+          "selectAll": "Sélectionner tout",
+          "unselectAll": "Désélectionner tout",
+          "import": "Importer",
+          "cancel": "Annuler"
+        }
+      }
     }
   }
 }

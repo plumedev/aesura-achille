@@ -28,7 +28,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { resolveComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { Account, Expense } from './ExpenseTable.vue'
+import type { Account, IExpense } from '@/interfaces/IExpense'
 import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
 
 const USelect = resolveComponent('USelect')
@@ -39,7 +39,7 @@ const { data: accounts, doRequest: getAccounts } = useReadFireDoc()
 
 const props = defineProps<{
   loading?: boolean
-  initialData?: Expense | null
+  initialData?: IExpense | null
 }>()
 
 export type TransactionType = 'expense' | 'income'
@@ -71,8 +71,8 @@ const isFormValid = computed(() => {
 })
 
 const emit = defineEmits<{
-  add: [expense: Expense]
-  update: [expense: Expense]
+  add: [expense: IExpense]
+  update: [expense: IExpense]
 }>()
 
 const resetForm = () => {
@@ -89,7 +89,7 @@ const handleSubmit = () => {
     return
   }
 
-  const expense: Expense = {
+  const expense: IExpense = {
     id: props.initialData?.id || Date.now().toString(),
     name: formState.value.name,
     amount: formState.value.amount!,
