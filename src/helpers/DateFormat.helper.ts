@@ -2,6 +2,8 @@
  * Helper pour la gestion de la navigation et du formatage des dates/mois
  */
 
+import type { IExpense } from '@/interfaces/IExpense'
+
 export interface MonthYear {
   year: number
   month: number // 1-12 (janvier = 1, décembre = 12)
@@ -95,4 +97,51 @@ export function isDateInMonth(dateString: string, year: number, month: number): 
   } catch {
     return false
   }
+}
+
+/**
+ * Retourne les transactions du mois précédent à partir de l'année et du mois spécifiés
+ * @param transactions - Les transactions à filtrer
+ * @param year - L'année à comparer
+ * @param month - Le mois à comparer (1-12)
+ * @returns Les transactions du mois précédent
+ */
+
+export function getPreviousMonthTransactions(transactions: IExpense[], year: number, month: number): IExpense[] {
+  return transactions.filter((transaction) => {
+    const transactionDate = new Date(transaction.date)
+    return transactionDate.getFullYear() === year && transactionDate.getMonth() === month
+  })
+}
+
+/**
+ * Projette une date vers un mois/année cible en gérant les dépassements de jours (ex: 30 janvier -> 28/29 février)
+ * @param sourceDate - La date source (string ISO "YYYY-MM-DD")
+ * @param targetYear - L'année cible
+ * @param targetMonth - Le mois cible (1-12)
+ * @returns La nouvelle date au format ISO "YYYY-MM-DD"
+ */
+export function projectDateToMonth(sourceDate: string, targetYear: number, targetMonth: number): string {
+  const date = new Date(sourceDate)
+  const originalDay = date.getDate()
+
+  // On crée une date au 1er du mois cible pour éviter les effets de bord immédiats
+  const targetDate = new Date(targetYear, targetMonth - 1, 1)
+
+  // On essaye de définir le jour original
+  targetDate.setDate(originalDay)
+
+  // Si le mois a changé (ex: on a demandé le 31 février et on a obtenu le 3 mars),
+  // c'est qu'il y a eu un overflow. On revient au dernier jour du mois cible.
+  if (targetDate.getMonth() !== targetMonth - 1) {
+    // Le jour 0 du mois suivant est le dernier jour du mois précédent (notre mois cible)
+    targetDate.setDate(0)
+  }
+
+  // Format YYYY-MM-DD manuel pour éviter les problèmes de timezone
+  const y = targetDate.getFullYear()
+  const m = String(targetDate.getMonth() + 1).padStart(2, '0')
+  const d = String(targetDate.getDate()).padStart(2, '0')
+
+  return `${y}-${m}-${d}`
 }
