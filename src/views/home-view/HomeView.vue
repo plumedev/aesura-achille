@@ -1,126 +1,48 @@
 <template>
   <UContainer id="home-container" class="py-4" height="calc(100vh - 100px)">
-    <!-- Carte principale -->
 
     <div class="space-y-4">
       <ExpenseForm class="hidden md:block" ref="expenseFormRef" @add="handleAddExpense" :loading="isCreatingExpense" />
     </div>
 
     <div class="space-y-4">
-      <!-- Navigation mois -->
+
       <div class="flex justify-center my-4">
         <MonthNavigation v-model:monthYear="selectedMonthYear" />
       </div>
 
-      <!-- Filtres -->
-      <div class="flex flex-col justify-between md:flex-row items-start md:items-center hidden md:flex gap-4 my-4">
-        <!-- Filtre par type -->
-        <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
-          <div class="flex items-center gap-4">
-            <label class="text-sm font-medium">{{ $t('home.filter.type') }}</label>
-            <USelect v-model="selectedType" :items="typeFilterOptions" :placeholder="$t('home.filter.allTypes')"
-              class="w-48" clearable />
-          </div>
-          <!-- Filtre par compte -->
-          <div class="flex items-center gap-4">
-            <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
-            <USelectMenu v-model="selectedAccounts" :items="accountFilterOptions"
-              :placeholder="$t('home.filter.allAccounts')" class="w-48" multiple />
-          </div>
-        </div>
+      <FilterTransactions class="hidden md:flex" :accountsOptions="accountsList" v-model:selectedType="selectedType"
+        v-model:selectedAccounts="selectedAccounts" v-model:isListView="isListView" />
 
-        <div class="flex items-center justify-between">
-          <UButton class="mr-2" icon="i-lucide-import" :label="$t('home.modal.importPreviousMonth.button')"
-            color="primary" variant="solid" to="/import-previous-month" />
-          <!-- Switch entre tableau et liste -->
-          <div class="flex items-center gap-3">
-            <span class="text-sm font-medium">{{ $t('home.view.table') }}</span>
-            <USwitch v-model="isListView" />
-            <span class="text-sm font-medium">{{ $t('home.view.list') }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Vue tableau -->
       <ExpenseTable v-if="viewMode === 'table'" :model-value="filteredExpenses"
         @update:model-value="handleUpdateExpenses" @delete="handleDeleteExpense" :loading="isLoadingExpenses" />
 
-      <!-- Vue liste -->
       <ExpenseList v-else :model-value="filteredExpenses" @delete="handleDeleteExpense" @update="handleUpdateExpense"
         :loading="isLoadingExpenses" />
     </div>
   </UContainer>
 
-  <NavbarFixed class="md:hidden bg-dark-500">
-    <template #content>
-      <div class="flex justify-between">
-        <div>
-          <UModal id="add-transaction-modal">
-            <UButton icon="i-lucide-plus" :label="$t('home.form.addTransaction')" color="primary" variant="solid" />
-
-            <template #content>
-              <h3 class="p-4 text-lg font-bold">{{ $t('home.form.add') }}</h3>
-              <ExpenseForm ref="expenseFormRef" @add="handleAddExpense" :loading="isCreatingExpense" />
-            </template>
-          </UModal>
-
-          <UModal id="filter-modal" class="mx-2">
-            <UButton icon="i-lucide-filter" :label="$t('home.form.filters')" color="neutral" variant="solid" />
-
-            <template #content>
-              <div class="flex flex-col justify-between md:flex-row items-start md:items-center gap-4 p-4">
-                <!-- Filtre par type -->
-                <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
-                  <div class="flex items-center gap-4">
-                    <label class="text-sm font-medium">{{ $t('home.filter.type') }}</label>
-                    <USelect v-model="selectedType" :items="typeFilterOptions" :placeholder="$t('home.filter.allTypes')"
-                      class="w-48" clearable />
-                  </div>
-                  <!-- Filtre par compte -->
-                  <div class="flex items-center gap-4">
-                    <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
-                    <USelectMenu v-model="selectedAccounts" :items="accountFilterOptions"
-                      :placeholder="$t('home.filter.allAccounts')" class="w-48" multiple />
-                  </div>
-                </div>
-              </div>
-            </template>
-          </UModal>
-        </div>
-
-        <div class="flex items-center justify-between">
-          <!-- Switch entre tableau et liste -->
-          <div class="flex items-center gap-3">
-            <span class="text-sm font-medium">
-              <UIcon name="i-lucide-table" class="size-5" />
-            </span>
-            <USwitch v-model="isListView" />
-            <span class="text-sm font-medium">
-              <UIcon name="i-lucide-list" class="size-5" />
-            </span>
-          </div>
-        </div>
-      </div>
-    </template>
-  </NavbarFixed>
+  <MobileNavbar :accountsOptions="accountsList" v-model:selectedType="selectedType"
+    v-model:selectedAccounts="selectedAccounts" v-model:isListView="isListView" @add="handleAddExpense"
+    :isCreatingExpense="isCreatingExpense" />
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
-import ExpenseTable from './components/ExpenseTable.vue'
-import type { IExpense } from '@/interfaces/IExpense'
-import ExpenseList from './components/ExpenseList.vue'
-import ExpenseForm from './components/ExpenseForm.vue'
-import MonthNavigation from './components/children/MonthNavigation.vue'
-import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
 import { useCreateFireDoc } from '@/composables/firebase/useCreateFireDoc'
 import { useDeleteFireDoc } from '@/composables/firebase/useDeleteFireDoc'
+import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
 import { useUpdateFireDoc } from '@/composables/firebase/useUpdateFireDoc'
-import { useToast } from '@nuxt/ui/composables'
-import { useI18n } from 'vue-i18n'
-import NavbarFixed from '@/components/NavbarFixed.vue'
 import { getCurrentMonth, isDateInMonth, type MonthYear } from '@/helpers/DateFormat.helper'
-
+import type { IExpense } from '@/interfaces/IExpense'
+import { useToast } from '@nuxt/ui/composables'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import ExpenseForm from './components/ExpenseForm.vue'
+import ExpenseList from './components/ExpenseList.vue'
+import ExpenseTable from './components/ExpenseTable.vue'
+import FilterTransactions from './components/children/FilterTransactions.vue'
+import MonthNavigation from './components/children/MonthNavigation.vue'
+import MobileNavbar from './components/MobileNavbar.vue'
 
 const { t } = useI18n()
 const { add: addToast } = useToast()
@@ -140,18 +62,9 @@ const viewMode = computed<'table' | 'list'>(() => {
   return isListView.value ? 'list' : 'table'
 })
 
-const accountFilterOptions = computed(() => {
-  if (accounts.value) {
-    return accounts.value.map((account: any) => account.accountName as string)
-  }
-  return []
+const accountsList = computed(() => {
+  return (Array.isArray(accounts.value) ? accounts.value : [])
 })
-
-const typeFilterOptions = computed(() => [
-  { label: t('home.filter.allTypes'), value: undefined },
-  { label: t('home.form.expense'), value: 'expense' },
-  { label: t('home.form.income'), value: 'income' }
-])
 
 const filteredExpenses = computed(() => {
   const allExpenses = (expenses.value as IExpense[]) || []
