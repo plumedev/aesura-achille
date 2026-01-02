@@ -1,0 +1,31 @@
+{
+  "Transactions": {
+    "form": {
+      "name": "Nom de la transaction",
+      "amount": "Montant (€)",
+      "type": "Type de transaction",
+      "expense": "Dépense",
+      "income": "Revenu",
+      "account": "Compte",
+      "add": "Ajouter",
+      "addTransaction": "Ajouter une transaction",
+      "update": "Modifier",
+      "reset": "Réinitialiser",
+      "filters": "Filtres",
+      "editTransaction": "Mise à jour de {transaction}",
+      "frequencyTitle": "Fréquence",
+      "unique": "Unique",
+      "monthly": "Mensuel",
+      "quarterly": "Trimestriel",
+      "yearly": "Annuel",
+      "selectDate": "Sélectionner une date",
+      "create": "Créer",
+      "endAndStartDate": "Date de fin  -  date de début"
+    },
+    "summary": {
+      "expenses": "Dépenses",
+      "income": "Revenus",
+      "balance": "Balance"
+    }
+  }
+}

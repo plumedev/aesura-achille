@@ -10,6 +10,8 @@ export interface ReadFireDocParams {
 }
 
 export function useReadFireDoc() {
+  const { add: addToast } = useToast()
+
   const runServices = async ({
     collectionName,
     documentId,
@@ -47,9 +49,8 @@ export function useReadFireDoc() {
         return result
       }
     } catch (error: unknown) {
-      const { add } = useToast()
       if (error instanceof Error) {
-        add({
+        addToast({
           title: error.message,
           color: 'error'
         })

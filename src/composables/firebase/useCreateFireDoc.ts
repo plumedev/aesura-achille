@@ -10,22 +10,23 @@ export interface CreateFireDocParams {
 }
 
 export function useCreateFireDoc() {
+  // Appeler useToast() au niveau du setup, pas dans la fonction asynchrone
+  const { add: addToast } = useToast()
+
   const runServices = async ({ collectionName, data, showToast = true }: CreateFireDocParams): Promise<string> => {
     try {
       const db = getDb()
       const docRef = await addDoc(collection(db, collectionName), data)
       if (showToast) {
-        const { add } = useToast()
-        add({
+        addToast({
           title: 'Document créé avec succès !',
           color: 'success'
         })
       }
       return docRef.id
     } catch (error: unknown) {
-      const { add } = useToast()
       if (error instanceof Error) {
-        add({
+        addToast({
           title: error.message,
           color: 'error'
         })

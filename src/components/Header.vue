@@ -2,14 +2,20 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
+import RouteName from '@/router/RouteName'
 
 const route = useRoute()
 
 const items = computed<NavigationMenuItem[]>(() => [
   {
+    label: 'Home',
+    to: '/',
+    active: route.name === RouteName.HOME,
+  },
+  {
     label: 'Mon mois',
-    to: '/home',
-    active: route.path.startsWith('/home'),
+    to: '/my-month',
+    active: route.name === RouteName.MY_MONTH,
   }
 ])
 </script>

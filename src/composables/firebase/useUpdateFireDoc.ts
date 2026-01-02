@@ -11,6 +11,8 @@ export interface UpdateFireDocParams {
 }
 
 export function useUpdateFireDoc() {
+  const { add: addToast } = useToast()
+
   const runServices = async ({
     collectionName,
     documentId,
@@ -21,16 +23,14 @@ export function useUpdateFireDoc() {
       const db = getDb()
       await updateDoc(doc(db, collectionName, documentId), data)
       if (showToast) {
-        const { add } = useToast()
-        add({
-          title: 'Document modifié avec succès !',
+        addToast({
+          title: 'Transaction modifiée avec succès !',
           color: 'success'
         })
       }
     } catch (error: unknown) {
-      const { add } = useToast()
       if (error instanceof Error) {
-        add({
+        addToast({
           title: error.message,
           color: 'error'
         })
