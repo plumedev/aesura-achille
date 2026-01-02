@@ -1,6 +1,7 @@
 {
   "Transactions": {
     "form": {
+      "createTransaction": "Créer une transaction",
       "name": "Nom de la transaction",
       "amount": "Montant (€)",
       "type": "Type de transaction",
