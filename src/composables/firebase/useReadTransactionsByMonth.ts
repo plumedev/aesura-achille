@@ -14,6 +14,8 @@ export interface ReadTransactionsByMonthParams {
  * Composable pour récupérer les transactions d'un mois et d'une année spécifiques
  */
 export function useReadTransactionsByMonth() {
+  const { add: addToast } = useToast()
+
   const runServices = async ({ collectionName, year, month }: ReadTransactionsByMonthParams): Promise<IExpense[]> => {
     try {
       const db = getDb()
@@ -40,9 +42,8 @@ export function useReadTransactionsByMonth() {
 
       return result
     } catch (error: unknown) {
-      const { add } = useToast()
       if (error instanceof Error) {
-        add({
+        addToast({
           title: error.message,
           color: 'error'
         })

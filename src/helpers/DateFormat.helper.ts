@@ -3,6 +3,7 @@
  */
 
 import type { IExpense } from '@/interfaces/IExpense'
+import { CalendarDate, parseDate } from '@internationalized/date'
 
 export interface MonthYear {
   year: number
@@ -125,16 +126,11 @@ export function projectDateToMonth(sourceDate: string, targetYear: number, targe
   const date = new Date(sourceDate)
   const originalDay = date.getDate()
 
-  // On crée une date au 1er du mois cible pour éviter les effets de bord immédiats
   const targetDate = new Date(targetYear, targetMonth - 1, 1)
 
-  // On essaye de définir le jour original
   targetDate.setDate(originalDay)
 
-  // Si le mois a changé (ex: on a demandé le 31 février et on a obtenu le 3 mars),
-  // c'est qu'il y a eu un overflow. On revient au dernier jour du mois cible.
   if (targetDate.getMonth() !== targetMonth - 1) {
-    // Le jour 0 du mois suivant est le dernier jour du mois précédent (notre mois cible)
     targetDate.setDate(0)
   }
 
@@ -144,4 +140,20 @@ export function projectDateToMonth(sourceDate: string, targetYear: number, targe
   const d = String(targetDate.getDate()).padStart(2, '0')
 
   return `${y}-${m}-${d}`
+}
+
+/**
+ * Convertit une date string en objet CalendarDate pour les composants de date NuxtUI
+ * @param dateString - La date au format string (ex: "YYYY-MM-DD" ou autre format)
+ * @returns Un objet CalendarDate compatible avec UInputDate
+ */
+export function parseDateString(dateString: string): CalendarDate {
+  try {
+    // Format attendu: "YYYY-MM-DD"
+    return parseDate(dateString)
+  } catch {
+    // Si le parsing échoue, utiliser new Date() comme fallback
+    const date = new Date(dateString)
+    return new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate())
+  }
 }

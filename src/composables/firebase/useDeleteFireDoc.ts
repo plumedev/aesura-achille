@@ -10,21 +10,21 @@ export interface DeleteFireDocParams {
 }
 
 export function useDeleteFireDoc() {
+  const { add: addToast } = useToast()
+
   const runServices = async ({ collectionName, documentId, showToast = true }: DeleteFireDocParams): Promise<void> => {
     try {
       const db = getDb()
       await deleteDoc(doc(db, collectionName, documentId))
       if (showToast) {
-        const { add } = useToast()
-        add({
-          title: 'Document supprimé avec succès !',
+        addToast({
+          title: 'Transaction supprimée avec succès !',
           color: 'success'
         })
       }
     } catch (error: unknown) {
-      const { add } = useToast()
       if (error instanceof Error) {
-        add({
+        addToast({
           title: error.message,
           color: 'error'
         })

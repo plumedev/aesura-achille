@@ -17,6 +17,14 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: 'Importer mois précédent'
     }
+  },
+  {
+    path: '/my-month',
+    name: RouteName.MY_MONTH,
+    component: () => import('../views/my-month-view/MyMonthView.vue'),
+    meta: {
+      title: 'Mon mois'
+    }
   }
 ]
 

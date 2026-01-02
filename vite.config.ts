@@ -26,6 +26,7 @@ export default defineConfig({
     VueI18nPlugin({
       include: [
         path.resolve(__dirname, './src/assets/locales/**'),
+        path.resolve(__dirname, './src/locales/**'),
         path.resolve(__dirname, './src/views/**/locales/*.json')
       ],
       strictMessage: false,
