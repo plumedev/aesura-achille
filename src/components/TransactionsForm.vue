@@ -1,47 +1,43 @@
 <template>
   <UForm class="flex flex-col gap-y-4">
-
-    <div class="flex flex-row gap-4 items-center w-full">
+    <div class="flex flex-col lg:flex-row gap-2 md:gap-4 items-stretch md:items-center w-full">
       <UInput id="transactions-form-name" v-model="formState.name" :placeholder="$t('Transactions.form.name')"
-        class="w-full" />
+        class="w-full flex-1" />
       <UInput id="transactions-form-amount" v-model="formState.amount" :placeholder="$t('Transactions.form.amount')"
-        class="w-full" />
+        class="w-full flex-1" />
       <USelect id="transactions-form-account" v-model="formState.account" :items="accountOptions"
-        :placeholder="$t('Transactions.form.account')" class="min-w-[150px] w-full" />
+        :placeholder="$t('Transactions.form.account')" class="min-w-[150px] w-full flex-1" />
     </div>
 
-    <div class="flex flex-col w-full">
-      <p class="text-sm">{{ $t('Transactions.form.frequencyTitle') }}</p>
-      <UTabs id="transactions-form-frequency" class="-mt-3 -mb-2" v-model="formState.frequency"
-        :items="frequencyOptions" />
-    </div>
+    <div class="flex flex-row lg:flex-col">
+      <div class="flex flex-col lg:flex-row flex-1 gap-x-4">
+        <UFormField class="flex-1" :label="$t('Transactions.form.endAndStartDate')">
+          <UInputDate id="transactions-form-effect-date" class="mt-0.5" ref="inputEffectDate" v-model="mvDateRange"
+            locale="fr-FR" range>
+            <template #trailing>
+              <UPopover :reference="inputEffectDate?.inputsRef[0]?.$el">
+                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-calendar"
+                  :aria-label="$t('Transactions.form.selectDate')" class="px-0" />
 
-    <div class="flex flex-row gap-x-4 w-full">
-      <UFormField :label="$t('Transactions.form.endAndStartDate')">
-        <UInputDate id="transactions-form-effect-date" ref="inputEffectDate" v-model="mvDateRange" locale="fr-FR" range>
-          <template #trailing>
-            <UPopover :reference="inputEffectDate?.inputsRef[0]?.$el">
-              <UButton color="neutral" variant="link" size="sm" icon="i-lucide-calendar"
-                :aria-label="$t('Transactions.form.selectDate')" class="px-0" />
+                <template #content>
+                  <UCalendar v-model="mvDateRange" class="p-2" :number-of-months="2" locale="fr-FR" range />
+                </template>
+              </UPopover>
+            </template>
+          </UInputDate>
+        </UFormField>
+        <UFormField class="flex-1" :label="$t('Transactions.form.type')">
+          <USelect id="transactions-form-type" v-model="formState.type" :items="transactionTypeOptions"
+            :placeholder="$t('Transactions.form.type')" class="min-w-[150px] w-full mt-0.5" />
+        </UFormField>
+        <UFormField class="flex-1" :label="$t('Transactions.form.type')">
+          <UTabs id="transactions-form-frequency" size="sm" v-model="formState.frequency" :items="frequencyOptions" />
+        </UFormField>
 
-              <template #content>
-                <UCalendar v-model="mvDateRange" class="p-2" :number-of-months="2" locale="fr-FR" range />
-              </template>
-            </UPopover>
-          </template>
-        </UInputDate>
-      </UFormField>
-      <UFormField :label="$t('Transactions.form.type')">
-        <USelect id="transactions-form-type" v-model="formState.type" :items="transactionTypeOptions"
-          :placeholder="$t('Transactions.form.type')" class="min-w-[150px] w-full" />
-      </UFormField>
-
-    </div>
-
-    <div class="flex flex-row justify-end gap-x-4 w-full">
-      <UButton id="transactions-form-submit" type="submit" color="primary" :disabled="!isFormValid"
-        :loading="isCreatingTransaction || isUpdatingTransaction" @click="handleSubmit">{{
-          props.formToEdit ? $t('Transactions.form.update') : $t('Transactions.form.create') }}</UButton>
+        <UButton id="transactions-form-submit" class="self-center mt-4" type="submit" color="primary"
+          :disabled="!isFormValid" :loading="isCreatingTransaction || isUpdatingTransaction" @click="handleSubmit">{{
+            props.formToEdit ? $t('Transactions.form.update') : $t('Transactions.form.create') }}</UButton>
+      </div>
     </div>
   </UForm>
 </template>

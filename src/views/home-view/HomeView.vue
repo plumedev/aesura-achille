@@ -25,6 +25,7 @@
   <MobileNavbar :accountsOptions="accountsList" v-model:selectedType="selectedType"
     v-model:selectedAccounts="selectedAccounts" v-model:isListView="isListView" @add="handleAddExpense"
     :isCreatingExpense="isCreatingExpense" />
+  {{ }}
 </template>
 
 <script setup lang="ts">
