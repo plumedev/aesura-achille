@@ -3,15 +3,15 @@
 
     <!-- Filtre par type -->
     <div class="flex items-center gap-4">
-      <label class="text-sm font-medium">{{ $t('home.filter.type') }}</label>
-      <USelect v-model="type" :items="typeFilterOptions" :placeholder="$t('home.filter.allTypes')" class="w-48"
+      <label class="text-sm font-medium">{{ $t('Transactions.filter.type') }}</label>
+      <USelect v-model="type" :items="typeFilterOptions" :placeholder="$t('Transactions.filter.allTypes')" class="w-48"
         clearable />
     </div>
 
     <!-- Filtre par compte -->
     <div class="flex items-center gap-4">
-      <label class="text-sm font-medium">{{ $t('home.filter.account') }}</label>
-      <USelectMenu v-model="accounts" :items="accountFilterOptions" :placeholder="$t('home.filter.allAccounts')"
+      <label class="text-sm font-medium">{{ $t('Transactions.filter.account') }}</label>
+      <USelectMenu v-model="accounts" :items="accountFilterOptions" :placeholder="$t('Transactions.filter.allAccounts')"
         class="w-48" multiple />
     </div>
 
@@ -23,7 +23,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ITransaction } from '@/interfaces/ITransaction'
 
-const props = defineProps<{
+defineProps<{
   transactions?: ITransaction[] | null
 }>()
 
@@ -33,9 +33,9 @@ const accounts = defineModel<string[]>('selectedAccounts', { default: () => [] }
 const { t } = useI18n()
 
 const typeFilterOptions = computed(() => [
-  { label: t('home.filter.allTypes'), value: undefined },
-  { label: t('home.form.expense'), value: 'expense' },
-  { label: t('home.form.income'), value: 'income' }
+  { label: t('Transactions.filter.allTypes'), value: undefined },
+  { label: t('Transactions.form.expense'), value: 'expense' },
+  { label: t('Transactions.form.income'), value: 'income' }
 ])
 
 const accountFilterOptions = computed(() => {

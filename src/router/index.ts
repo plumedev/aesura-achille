@@ -4,22 +4,6 @@ import RouteName from './RouteName'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: RouteName.HOME,
-    component: () => import('../views/home-view/HomeView.vue'),
-    meta: {
-      title: 'Accueil'
-    }
-  },
-  {
-    path: '/import-previous-month',
-    name: RouteName.IMPORT_PREVIOUS_MONTH,
-    component: () => import('../views/import-view/ImportPreviousMonthView.vue'),
-    meta: {
-      title: 'Importer mois précédent'
-    }
-  },
-  {
-    path: '/my-month',
     name: RouteName.MY_MONTH,
     component: () => import('../views/my-month-view/MyMonthView.vue'),
     meta: {
