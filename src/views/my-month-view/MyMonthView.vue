@@ -2,9 +2,15 @@
   <div class="flex flex-col gap-4">
 
     <UContainer class="mt-4">
-      <UCard class="bg-muted/50">
-        <TransactionsForm class="" @createTransaction="handleCreateTransaction" :transactionToEdit="transactionData" />
-      </UCard>
+      <UDrawer>
+        <UButton :label="$t('Transactions.form.createTransaction')" color="primary"
+          trailing-icon="i-lucide-badge-plus" />
+
+        <template #content>
+          <TransactionsForm class="p-10" @createTransaction="handleCreateTransaction"
+            :transactionToEdit="transactionData" />
+        </template>
+      </UDrawer>
     </UContainer>
 
     <UContainer class="mt-4">
