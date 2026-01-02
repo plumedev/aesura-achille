@@ -1,29 +1,33 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
-import { useRoute } from 'vue-router'
-import { computed } from 'vue'
-import RouteName from '@/router/RouteName'
+import { useRouter } from 'vue-router'
+import { computed, resolveComponent } from 'vue'
 
-const route = useRoute()
+const router = useRouter()
 
-const items = computed<NavigationMenuItem[]>(() => [
+const UButton = resolveComponent('UButton')
+const UDropdownMenu = resolveComponent('UDropdownMenu')
+
+const menuItems = computed(() => [
   {
     label: 'Home',
-    to: '/',
-    active: route.name === RouteName.HOME,
+    icon: 'i-lucide-home',
+    click: () => router.push('/')
   },
   {
     label: 'Mon mois',
-    to: '/my-month',
-    active: route.name === RouteName.MY_MONTH,
+    icon: 'i-lucide-calendar',
+    click: () => router.push('/my-month')
   }
 ])
 </script>
 
 <template>
   <UHeader title="Aesura">
-
-    <UNavigationMenu :items="items" color="primary" class="text-primary" highlight />
+    <template #left>
+      <UDropdownMenu :items="menuItems" :content="{ align: 'start' }">
+        <UButton icon="i-lucide-menu" color="neutral" variant="ghost" aria-label="Menu de navigation" />
+      </UDropdownMenu>
+    </template>
 
     <template #right>
       <UColorModeButton />
