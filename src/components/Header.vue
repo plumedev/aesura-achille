@@ -11,12 +11,12 @@ const menuItems = computed(() => [
   {
     label: 'Home',
     icon: 'i-lucide-home',
-    click: () => router.push('/')
+    onSelect: () => router.push('/')
   },
   {
     label: 'Mon mois',
     icon: 'i-lucide-calendar',
-    click: () => router.push('/my-month')
+    onSelect: () => router.push('/my-month')
   }
 ])
 </script>
