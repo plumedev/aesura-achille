@@ -26,6 +26,12 @@
       "expenses": "Dépenses",
       "income": "Revenus",
       "balance": "Balance"
+    },
+    "filter": {
+      "type": "Type",
+      "account": "Compte",
+      "allTypes": "Tous les types",
+      "allAccounts": "Tous les comptes"
     }
   }
 }
