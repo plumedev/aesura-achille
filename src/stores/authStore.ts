@@ -13,7 +13,14 @@ export const useAuthStore = defineStore('auth', () => {
 
   const initAuth = () => {
     const auth = getAuthInstance()
-    isLoading.value = true
+
+    const currentUser = auth.currentUser
+    if (currentUser) {
+      user.value = currentUser
+      isLoading.value = false
+    } else {
+      isLoading.value = true
+    }
 
     onAuthStateChanged(auth, (firebaseUser) => {
       user.value = firebaseUser

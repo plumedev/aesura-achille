@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import { watch } from 'vue'
 import RouteName from './RouteName'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -28,7 +29,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
 
   // Mettre à jour le titre de la page
@@ -36,24 +37,35 @@ router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} - Aesura`
   }
 
+  // Attendre que l'état d'authentification soit chargé
+  if (authStore.isLoading) {
+    // Attendre que isLoading devienne false en utilisant watch
+    await new Promise<void>((resolve) => {
+      const stopWatcher = watch(
+        () => authStore.isLoading,
+        (isLoading) => {
+          if (!isLoading) {
+            stopWatcher()
+            resolve()
+          }
+        },
+        { immediate: true }
+      )
+      
+      // Timeout de sécurité (max 3 secondes)
+      setTimeout(() => {
+        stopWatcher()
+        resolve()
+      }, 3000)
+    })
+  }
+
   // Vérifier si la route nécessite une authentification
   if (to.meta.requiresAuth) {
-    // Attendre que l'état d'authentification soit chargé
-    if (authStore.isLoading) {
-      // Attendre un peu pour que l'auth se charge
-      setTimeout(() => {
-        if (!authStore.isAuthenticated) {
-          next({ name: 'login', query: { redirect: to.fullPath } })
-        } else {
-          next()
-        }
-      }, 100)
+    if (!authStore.isAuthenticated) {
+      next({ name: 'login', query: { redirect: to.fullPath } })
     } else {
-      if (!authStore.isAuthenticated) {
-        next({ name: 'login', query: { redirect: to.fullPath } })
-      } else {
-        next()
-      }
+      next()
     }
   } else {
     // Si l'utilisateur est déjà connecté et essaie d'accéder à la page de login, rediriger vers la page d'accueil
