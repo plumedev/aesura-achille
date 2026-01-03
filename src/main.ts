@@ -6,6 +6,7 @@ import { createPinia } from 'pinia'
 import ui from '@nuxt/ui/vue-plugin'
 import nuxtuiPlugin from './plugins/nuxtui'
 import { initFirebase } from './config/firebase'
+import { useAuthStore } from './stores/authStore'
 import './assets/styles/main.css'
 
 // Initialiser Firebase
@@ -20,8 +21,13 @@ try {
 document.documentElement.classList.add('dark')
 
 const app = createApp(App)
+const pinia = createPinia()
 
-app.use(createPinia()).use(router).use(i18n).use(ui).use(nuxtuiPlugin)
+app.use(pinia).use(router).use(i18n).use(ui).use(nuxtuiPlugin)
+
+// Initialiser le store d'authentification après la création de Pinia
+const authStore = useAuthStore()
+authStore.initAuth()
 
 app.config.errorHandler = (err, instance, info) => {
   console.error('Global error:', err, 'Vue instance:', instance, 'Error info:', info)
