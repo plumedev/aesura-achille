@@ -21,6 +21,15 @@ const routes: RouteRecordRaw[] = [
       title: 'Connexion',
       requiresAuth: false
     }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: RouteName.NOT_FOUND,
+    component: () => import('../views/NotFoundView.vue'),
+    meta: {
+      title: 'Page introuvable',
+      requiresAuth: false
+    }
   }
 ]
 
@@ -29,7 +38,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore()
 
   // Mettre à jour le titre de la page
@@ -51,7 +60,7 @@ router.beforeEach(async (to, from, next) => {
         },
         { immediate: true }
       )
-      
+
       // Timeout de sécurité (max 3 secondes)
       setTimeout(() => {
         stopWatcher()
