@@ -3,7 +3,8 @@
  */
 enum RouteName {
   ROOT = 'root',
-  MY_MONTH = 'my_month'
+  MY_MONTH = 'my_month',
+  NOT_FOUND = 'not_found'
 }
 
 export default RouteName

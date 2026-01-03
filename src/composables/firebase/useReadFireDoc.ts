@@ -1,47 +1,65 @@
-import { doc, getDoc, collection, getDocs, query, type QueryConstraint, type DocumentData } from 'firebase/firestore'
+import {
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+  type QueryConstraint,
+  type DocumentData,
+  DocumentSnapshot
+} from 'firebase/firestore'
 import { getDb } from '@/config/firebase'
 import { useRequest } from '@/composables/utils/useRequest'
 import { useToast } from '@nuxt/ui/composables'
+import { useAuthStore } from '@/stores/authStore'
 
 export interface ReadFireDocParams {
   collectionName: string
   documentId?: string
   queryConstraints?: QueryConstraint[]
+  requireAuth?: boolean
 }
 
 export function useReadFireDoc() {
   const { add: addToast } = useToast()
+  const authStore = useAuthStore()
 
   const runServices = async ({
     collectionName,
     documentId,
-    queryConstraints
+    queryConstraints = [],
+    requireAuth = true
   }: ReadFireDocParams): Promise<DocumentData | DocumentData[] | null> => {
     try {
       const db = getDb()
 
-      // Si un documentId est fourni, lire un document spécifique
       if (documentId) {
         const docRef = doc(db, collectionName, documentId)
         const docSnap = await getDoc(docRef)
 
         if (docSnap.exists()) {
-          return { id: docSnap.id, ...docSnap.data() }
+          const data = { id: docSnap.id, ...docSnap.data() }
+
+          if (requireAuth && authStore.userId && (data as { userId?: string }).userId !== authStore.userId) {
+            throw new Error("Vous n'avez pas accès à ce document")
+          }
+
+          return data
         } else {
           return null
         }
-      }
-      // Sinon, lire tous les documents de la collection (avec éventuelles contraintes de requête)
-      else {
-        let q = query(collection(db, collectionName))
+      } else {
+        const constraints: QueryConstraint[] = [...queryConstraints]
 
-        if (queryConstraints && queryConstraints.length > 0) {
-          q = query(collection(db, collectionName), ...queryConstraints)
+        if (requireAuth && authStore.userId) {
+          constraints.push(where('userId', '==', authStore.userId))
         }
 
+        const q = query(collection(db, collectionName), ...constraints)
         const querySnapshot = await getDocs(q)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const result = querySnapshot.docs.map((docSnap: any) => ({
+
+        const result = querySnapshot.docs.map((docSnap: DocumentSnapshot) => ({
           id: docSnap.id,
           ...docSnap.data()
         }))

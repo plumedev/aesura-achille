@@ -1,8 +1,10 @@
 import { initializeApp, type FirebaseApp } from 'firebase/app'
 import { getFirestore, type Firestore } from 'firebase/firestore'
+import { getAuth, type Auth } from 'firebase/auth'
 
 let app: FirebaseApp | null = null
 let db: Firestore | null = null
+let auth: Auth | null = null
 
 export const initFirebase = (config?: {
   apiKey: string
@@ -32,8 +34,9 @@ export const initFirebase = (config?: {
 
     app = initializeApp(firebaseConfig)
     db = getFirestore(app)
+    auth = getAuth(app)
   }
-  return { app, db }
+  return { app, db, auth }
 }
 
 export const getDb = (): Firestore => {
@@ -41,4 +44,11 @@ export const getDb = (): Firestore => {
     throw new Error("Firebase n'est pas initialisé. Appelez initFirebase() d'abord.")
   }
   return db
+}
+
+export const getAuthInstance = (): Auth => {
+  if (!auth) {
+    throw new Error("Firebase Auth n'est pas initialisé. Appelez initFirebase() d'abord.")
+  }
+  return auth
 }
