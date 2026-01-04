@@ -20,6 +20,15 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/dashboard',
+    name: RouteName.DASHBOARD,
+    component: () => import('../views/dashboard-view/DashboardView.vue'),
+    meta: {
+      title: 'Dashboard',
+      requiresAuth: true
+    }
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import('../views/LoginView.vue'),
