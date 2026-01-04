@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-neutral-900">
-    <UCard class="w-full max-w-md">
+    <UCard class="w-full max-w-md m-4 border-none">
       <template #header>
         <h2 class="text-2xl font-bold text-center">Connexion</h2>
         <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">
