@@ -1,18 +1,9 @@
 <template>
-  <UDashboardGroup>
-    <UDashboardPanel resizable>
-      <template #body>
-        <div class="h-96 p-4">
-          <p>Dashboard content</p>
-        </div>
-      </template>
-    </UDashboardPanel>
-  </UDashboardGroup>
+  <div class="p-4">
+    <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
+    <p>Contenu du dashboard</p>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { resolveComponent } from 'vue'
-
-const UDashboardGroup = resolveComponent('UDashboardGroup')
-const UDashboardPanel = resolveComponent('UDashboardPanel')
 </script>
