@@ -1,7 +1,13 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import { watch } from 'vue'
+import {
+  createRouter,
+  createWebHistory,
+  type RouteRecordRaw,
+  type NavigationGuardNext,
+  type RouteLocationNormalized
+} from 'vue-router'
 import RouteName from './RouteName'
 import { useAuthStore } from '@/stores/authStore'
+import { watch } from 'vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -30,15 +36,6 @@ const routes: RouteRecordRaw[] = [
       title: 'Connexion',
       requiresAuth: false
     }
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: RouteName.NOT_FOUND,
-    component: () => import('../views/NotFoundView.vue'),
-    meta: {
-      title: 'Page introuvable',
-      requiresAuth: false
-    }
   }
 ]
 
@@ -47,7 +44,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to, _from, next) => {
+router.beforeEach(async (to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
   const authStore = useAuthStore()
 
   // Mettre à jour le titre de la page

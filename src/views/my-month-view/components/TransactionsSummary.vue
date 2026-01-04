@@ -1,12 +1,12 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div class="grid grid-cols-3 gap-4">
     <!-- Carte Dépenses -->
     <UCard>
       <div class="flex flex-col space-y-2">
-        <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+        <div class="md:text-sm text-xs font-medium text-gray-500 dark:text-gray-400">
           {{ $t('Transactions.summary.expenses') }}
         </div>
-        <div class="text-2xl font-bold text-red-400">
+        <div class="md:text-2xl text-xl font-bold text-red-400">
           {{ formattedTotalExpenses }}
         </div>
       </div>
@@ -15,10 +15,10 @@
     <!-- Carte Revenus -->
     <UCard>
       <div class="flex flex-col space-y-2">
-        <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+        <div class="md:text-sm text-xs font-medium text-gray-500 dark:text-gray-400">
           {{ $t('Transactions.summary.income') }}
         </div>
-        <div class="text-2xl font-bold text-green-500">
+        <div class="md:text-2xl text-xl font-bold text-green-500">
           {{ formattedTotalIncome }}
         </div>
       </div>
@@ -27,10 +27,10 @@
     <!-- Carte Balance -->
     <UCard>
       <div class="flex flex-col space-y-2">
-        <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+        <div class="md:text-sm text-xs font-medium text-gray-500 dark:text-gray-400">
           {{ $t('Transactions.summary.balance') }}
         </div>
-        <div :class="`text-2xl font-bold ${balance >= 0 ? 'text-green-500' : 'text-red-400'}`">
+        <div :class="`md:text-2xl text-xl font-bold ${balance >= 0 ? 'text-green-500' : 'text-red-400'}`">
           {{ formattedBalance }}
         </div>
       </div>

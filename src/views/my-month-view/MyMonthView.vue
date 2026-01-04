@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 h-[calc(100vh-64px)]">
 
     <UContainer class="mt-4">
       <UDrawer>
@@ -19,9 +19,9 @@
         v-model:selectedAccounts="selectedAccounts" />
     </UContainer>
 
-    <UContainer>
-      <TransactionsList class="h-[calc(100vh-490px)] overflow-y-scroll" :transactions="filteredExpenses"
-        @deleteTransaction="handleDeleteTransaction" @editTransaction="handleEditTransaction" />
+    <UContainer id="transactions-list" class="flex-1 overflow-y-auto">
+      <TransactionsList :transactions="filteredExpenses" @deleteTransaction="handleDeleteTransaction"
+        @editTransaction="handleEditTransaction" />
     </UContainer>
   </div>
 </template>
