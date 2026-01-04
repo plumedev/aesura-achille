@@ -1,41 +1,20 @@
 <template>
-  <div class="grid grid-cols-3 gap-4">
-    <!-- Carte Dépenses -->
-    <UCard>
-      <div class="flex flex-col space-y-2">
-        <div class="md:text-sm text-xs font-medium text-gray-500 dark:text-gray-400">
-          {{ $t('Transactions.summary.expenses') }}
-        </div>
-        <div class="md:text-2xl text-xl font-bold text-red-400">
-          {{ formattedTotalExpenses }}
-        </div>
-      </div>
-    </UCard>
 
-    <!-- Carte Revenus -->
-    <UCard>
-      <div class="flex flex-col space-y-2">
-        <div class="md:text-sm text-xs font-medium text-gray-500 dark:text-gray-400">
-          {{ $t('Transactions.summary.income') }}
-        </div>
-        <div class="md:text-2xl text-xl font-bold text-green-500">
-          {{ formattedTotalIncome }}
-        </div>
-      </div>
-    </UCard>
 
-    <!-- Carte Balance -->
-    <UCard>
-      <div class="flex flex-col space-y-2">
-        <div class="md:text-sm text-xs font-medium text-gray-500 dark:text-gray-400">
-          {{ $t('Transactions.summary.balance') }}
-        </div>
-        <div :class="`md:text-2xl text-xl font-bold ${balance >= 0 ? 'text-green-500' : 'text-red-400'}`">
-          {{ formattedBalance }}
-        </div>
+  <div class="flex flex-row w-full flex-wrap gap-0">
+    <UPageCard v-for="card in uPageCardData"
+      class="flex-1 w-full rounded-none first:rounded-l-lg last:rounded-r-lg hover:z-1 icon:w-12 icon:h-12"
+      :key="card.title" :title="card.title" :icon="card.icon" :ui="{
+        leading: 'p-2.5 rounded-full bg-primary/10 ring ring-inset ring-primary/25',
+      }">
+      <div class="flex items-center gap-2">
+        <span class="text-lg md:text-2xl font-semibold" :class="'text-' + card.color">
+          {{ card.value }}
+        </span>
       </div>
-    </UCard>
+    </UPageCard>
   </div>
+
 </template>
 
 <script setup lang="ts">
@@ -43,6 +22,7 @@ import { computed } from 'vue'
 import type { ITransaction } from '@/interfaces/ITransaction'
 import { TransactionsType } from '@/enums/TransactionsType.enum'
 import { formatCurrency } from '@/helpers/NumberFormat.helper'
+import { i18n } from '@/plugins/i18n'
 
 const props = defineProps<{
   transactions: ITransaction[] | null | undefined
@@ -72,15 +52,20 @@ const balance = computed(() => {
   return totalIncome.value - totalExpenses.value
 })
 
-const formattedTotalExpenses = computed(() => {
-  return formatCurrency(totalExpenses.value)
-})
-
-const formattedTotalIncome = computed(() => {
-  return formatCurrency(totalIncome.value)
-})
-
-const formattedBalance = computed(() => {
-  return formatCurrency(balance.value)
-})
+const uPageCardData = computed(() => [{
+  title: i18n.global.t('Transactions.summary.expenses'),
+  value: formatCurrency(totalExpenses.value),
+  icon: 'lucide-banknote-arrow-down',
+  color: 'red-400',
+}, {
+  title: i18n.global.t('Transactions.summary.income'),
+  value: formatCurrency(totalIncome.value),
+  icon: 'lucide-banknote-arrow-up',
+  color: 'green-400',
+}, {
+  title: i18n.global.t('Transactions.summary.balance'),
+  value: formatCurrency(balance.value),
+  icon: 'lucide-piggy-bank',
+  color: balance.value >= 0 ? 'green-400' : 'red-400',
+}])
 </script>
