@@ -11,28 +11,31 @@
 
     <div class="flex flex-row lg:flex-col">
       <div class="flex flex-col lg:flex-row flex-1 gap-x-4">
-        <UFormField class="flex-1" :label="$t('Transactions.form.endAndStartDate')">
-          <UInputDate id="transactions-form-effect-date" class="mt-0.5" ref="inputEffectDate" v-model="mvDateRange"
-            locale="fr-FR" range>
-            <template #trailing>
-              <UPopover :reference="inputEffectDate?.inputsRef[0]?.$el">
-                <UButton color="neutral" variant="link" size="sm" icon="i-lucide-calendar"
-                  :aria-label="$t('Transactions.form.selectDate')" class="px-0" />
-
-                <template #content>
-                  <UCalendar v-model="mvDateRange" class="p-2" :number-of-months="2" locale="fr-FR" range />
-                </template>
-              </UPopover>
-            </template>
-          </UInputDate>
-        </UFormField>
-        <UFormField class="flex-1" :label="$t('Transactions.form.type')">
-          <USelect id="transactions-form-type" v-model="formState.type" :items="transactionTypeOptions"
-            :placeholder="$t('Transactions.form.type')" class="min-w-[150px] w-full mt-0.5" />
-        </UFormField>
-        <UFormField class="flex-1" :label="$t('Transactions.form.type')">
+        <UFormField class="flex-1 mt-2" :label="$t('Transactions.form.frequencyTitle')">
           <UTabs id="transactions-form-frequency" size="sm" v-model="formState.frequency" :items="frequencyOptions" />
         </UFormField>
+
+        <div class="flex">
+          <UFormField class="flex-1 mt-2" :label="$t('Transactions.form.endAndStartDate')">
+            <UInputDate id="transactions-form-effect-date" class="mt-0.5" ref="inputEffectDate" v-model="mvDateRange"
+              locale="fr-FR" range>
+              <template #trailing>
+                <UPopover :reference="inputEffectDate?.inputsRef[0]?.$el">
+                  <UButton color="neutral" variant="link" size="sm" icon="i-lucide-calendar"
+                    :aria-label="$t('Transactions.form.selectDate')" class="px-0" />
+
+                  <template #content>
+                    <UCalendar v-model="mvDateRange" class="p-2" :number-of-months="2" locale="fr-FR" range />
+                  </template>
+                </UPopover>
+              </template>
+            </UInputDate>
+          </UFormField>
+          <UFormField class="flex-1 mt-2" :label="$t('Transactions.form.type')">
+            <USelect id="transactions-form-type" v-model="formState.type" :items="transactionTypeOptions"
+              :placeholder="$t('Transactions.form.type')" class="min-w-[150px] w-full mt-0.5" />
+          </UFormField>
+        </div>
 
         <UButton id="transactions-form-submit" class="self-center mt-4" type="submit" color="primary"
           :disabled="!isFormValid" :loading="isCreatingTransaction || isUpdatingTransaction" @click="handleSubmit">{{
