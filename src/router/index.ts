@@ -1,6 +1,13 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  type RouteRecordRaw,
+  type NavigationGuardNext,
+  type RouteLocationNormalized
+} from 'vue-router'
 import RouteName from './RouteName'
 import { useAuthStore } from '@/stores/authStore'
+import { watch } from 'vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -28,7 +35,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
   const authStore = useAuthStore()
 
   // Mettre à jour le titre de la page
@@ -50,7 +57,7 @@ router.beforeEach(async (to, from, next) => {
         },
         { immediate: true }
       )
-      
+
       // Timeout de sécurité (max 3 secondes)
       setTimeout(() => {
         stopWatcher()
