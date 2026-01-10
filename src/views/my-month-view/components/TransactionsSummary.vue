@@ -1,12 +1,8 @@
 <template>
-
-
   <div class="flex flex-row w-full flex-wrap gap-0">
     <UPageCard v-for="card in uPageCardData"
-      class="flex-1 w-full rounded-none first:rounded-l-lg last:rounded-r-lg hover:z-1 icon:w-12 icon:h-12"
-      :key="card.title" :title="card.title" :icon="card.icon" :ui="{
-        leading: 'p-2.5 rounded-full bg-primary/10 ring ring-inset ring-primary/25',
-      }">
+      class="flex-1 w-full rounded-none first:rounded-l-lg last:rounded-r-lg hover:z-1" :key="card.title"
+      :title="card.title" :icon="card.icon">
       <div class="flex items-center gap-2">
         <span class="text-lg md:text-2xl font-semibold" :class="'text-' + card.color">
           {{ card.value }}

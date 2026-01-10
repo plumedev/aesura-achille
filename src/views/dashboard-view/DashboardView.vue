@@ -1,41 +1,56 @@
 <template>
-  <UPageGrid class="flex flex-col md:flex-row gap-4">
-    <UPageCard v-for="(card, index) in cards" :key="index" v-bind="card" variant="subtle" :ui="{
-      container: 'gap-y-1.5',
-      wrapper: 'items-start',
-      leading: 'p-2.5 rounded-full bg-primary/10 ring ring-inset ring-primary/25',
-      title: 'font-normal text-muted text-xs uppercase'
-    }" class="lg:rounded-none first:rounded-l-lg last:rounded-r-lg hover:z-1">
-      <div class="flex items-center gap-2">
-        <span class="text-2xl font-semibold text-highlighted">
-          {{ card.title }}
-        </span>
-      </div>
-    </UPageCard>
-  </UPageGrid>
+  <Teleport to="#dashboard-toolbar-left" v-if="isMounted">
+    <MonthNavigation />
+    <FilterTransactions class="hidden md:flex" :transactions="transactionsList" v-model:selectedType="selectedType"
+      v-model:selectedAccounts="selectedAccounts" />
+  </Teleport>
+
+  <TransactionsSummary :transactions="filteredExpenses" />
+  <TransactionsList :transactions="filteredExpenses" />
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useReadFireDoc } from '@/composables/firebase/useReadFireDoc'
+import type { ITransaction } from '@/interfaces/ITransaction';
+import TransactionsSummary from '@/views/my-month-view/components/TransactionsSummary.vue';
+import MonthNavigation from '@/components/MonthNavigation.vue';
+import TransactionsList from '@/components/TransactionsList.vue';
+import FilterTransactions from '@/views/my-month-view/components/FilterTransactions.vue';
 
-const cards = ref([
-  {
-    title: 'Icons',
-    description: 'Nuxt UI integrates with Nuxt Icon to access over 200,000+ icons from Iconify.',
-    icon: 'i-lucide-smile',
-    to: '/docs/getting-started/integrations/icons'
-  },
-  {
-    title: 'Fonts',
-    description: 'Nuxt UI integrates with Nuxt Fonts to provide plug-and-play font optimization.',
-    icon: 'i-lucide-a-large-small',
-    to: '/docs/getting-started/integrations/fonts'
-  },
-  {
-    title: 'Color Mode',
-    description: 'Nuxt UI integrates with Nuxt Color Mode to switch between light and dark.',
-    icon: 'i-lucide-sun-moon',
-    to: '/docs/getting-started/integrations/color-mode'
+const { data: transactions, doRequest: getTransactions } = useReadFireDoc()
+
+const selectedAccounts = ref<string[]>([])
+const selectedType = ref<'expense' | 'income' | undefined>(undefined)
+const isMounted = ref(false)
+
+const transactionsList = computed(() => {
+  const data = transactions.value
+  return Array.isArray(data) ? (data as ITransaction[]) : null
+})
+
+const filteredExpenses = computed(() => {
+  const allExpenses = (transactionsList.value as ITransaction[]) || []
+  let filtered = allExpenses
+
+  // Filtrer par type
+  if (selectedType.value) {
+    filtered = filtered.filter((transaction) => transaction.type === selectedType.value)
   }
-])
+
+  // Filtrer par compte (multi-sélection)
+  if (selectedAccounts.value.length > 0) {
+    filtered = filtered.filter((transaction) => selectedAccounts.value.includes(transaction.account as string))
+  }
+
+  return filtered
+})
+
+onMounted(async () => {
+  isMounted.value = true
+  await getTransactions({
+    collectionName: 'transactions'
+  })
+})
+
 </script>

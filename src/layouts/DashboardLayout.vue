@@ -1,24 +1,18 @@
 <template>
   <UDashboardGroup>
     <UDashboardSidebar>
-      <UHeader title="Aesura" />
+      <UHeader title="Aesura" to="/" class="cursor-pointer border-none" />
+      <UNavigationMenu :items="navigationMenuItems" orientation="vertical" />
     </UDashboardSidebar>
 
     <UDashboardPanel>
       <template #header>
-        <UDashboardNavbar>
+        <UDashboardToolbar>
           <template #left>
-            <nav class="flex gap-4">
-              <RouterLink v-for="item in navigationItems" :key="item.to" :to="item.to"
-                class="px-3 py-2 rounded-md text-sm font-medium transition-colors" :class="{
-                  'bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300': isActive(item.to),
-                  'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800': !isActive(item.to)
-                }">
-                {{ item.label }}
-              </RouterLink>
-            </nav>
+            <div id="dashboard-toolbar-left" class="flex items-center gap-2"></div>
+            <div id="dashboard-toolbar-right" class="flex items-center gap-2"></div>
           </template>
-        </UDashboardNavbar>
+        </UDashboardToolbar>
       </template>
 
       <template #body>
@@ -36,16 +30,15 @@ import RouteName from '@/router/RouteName'
 const router = useRouter()
 const route = useRoute()
 
-const navigationItems = computed(() => {
+const navigationMenuItems = computed(() => {
+  const currentRoute = route
   return router.getRoutes()
-    .filter(route => route.meta?.requiresAuth && route.name !== RouteName.NOT_FOUND)
-    .map(route => ({
-      label: route.meta?.title as string || route.name as string,
-      to: route.path
+    .filter(r => r.meta?.requiresAuth && r.name !== RouteName.NOT_FOUND)
+    .map(r => ({
+      label: r.meta?.title as string || r.name as string,
+      to: r.path,
+      active: currentRoute.path === r.path,
+      icon: r.meta?.icon as string
     }))
 })
-
-const isActive = (path: string) => {
-  return route.path === path
-}
 </script>
