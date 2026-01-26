@@ -12,11 +12,22 @@ import { watch } from 'vue'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
+    name: RouteName.DASHBOARD,
+    component: () => import('../views/dashboard-view/DashboardView.vue'),
+    meta: {
+      title: 'Dashboard',
+      requiresAuth: true,
+      icon: 'lucide-layout-dashboard'
+    }
+  },
+  {
+    path: '/my-month',
     name: RouteName.MY_MONTH,
     component: () => import('../views/my-month-view/MyMonthView.vue'),
     meta: {
       title: 'Mon mois',
-      requiresAuth: true
+      requiresAuth: true,
+      icon: 'lucide-calendar-sync'
     }
   },
   {
